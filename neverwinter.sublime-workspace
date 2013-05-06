@@ -1,0 +1,740 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"tempe",
+				"temperature_unit"
+			],
+			[
+				"my",
+				"myArray"
+			],
+			[
+				"stop",
+				"stopPropagation"
+			],
+			[
+				"obstac",
+				"obstacle_height"
+			],
+			[
+				"obsta",
+				"obstacle_height"
+			],
+			[
+				"obstacle",
+				"obstacle_height"
+			],
+			[
+				"animate",
+				"animatePath"
+			],
+			[
+				"check",
+				"checkValidity"
+			],
+			[
+				"obst",
+				"obstacle_width"
+			],
+			[
+				"obstacl",
+				"obstacle_height"
+			],
+			[
+				"recwi",
+				"rec_width"
+			],
+			[
+				"remo",
+				"removePath"
+			],
+			[
+				"for",
+				"fori	Range Comprehension (inclusive)"
+			],
+			[
+				"mouse",
+				"mouseStillDown"
+			],
+			[
+				"do",
+				"doSomething"
+			],
+			[
+				"su",
+				"subl_packages_path"
+			],
+			[
+				"file",
+				"file_list"
+			],
+			[
+				"them",
+				"theme_list"
+			],
+			[
+				"gra",
+				"grayDarker"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 150.0,
+		"selected_items":
+		[
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"select t",
+				"BracketHighlighter: Select Tag Name (closing and opening)"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			],
+			[
+				"select",
+				"BracketHighlighter: Select Bracket Content"
+			],
+			[
+				"Read",
+				"Emmet: Reload Extensions"
+			],
+			[
+				"disco",
+				"Package Control: Discover Packages"
+			],
+			[
+				"compile",
+				"Coffee: Compile File"
+			],
+			[
+				"compil",
+				"Coffee: Compile File"
+			],
+			[
+				"compi",
+				"Coffee: Compile File"
+			],
+			[
+				"swap",
+				"BracketHighlighter: Swap Quotes"
+			],
+			[
+				"coffee",
+				"Set Syntax: CoffeeScript"
+			],
+			[
+				"comp",
+				"Coffee: Compile File"
+			],
+			[
+				"coff",
+				"Set Syntax: CoffeeScript"
+			],
+			[
+				"remov",
+				"Package Control: Remove Package"
+			],
+			[
+				"build",
+				"Build: Build"
+			],
+			[
+				"ctags",
+				"CTags: Rebuild Tags"
+			],
+			[
+				"install ",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"pack inst",
+				"Package Control: Install Package"
+			],
+			[
+				"pack ins",
+				"Package Control: Install Package"
+			],
+			[
+				"pack insta",
+				"Package Control: Install Package"
+			],
+			[
+				"pack in",
+				"Package Control: Install Package"
+			],
+			[
+				"packag in",
+				"Package Control: Install Package"
+			],
+			[
+				"Pack ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: inst",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: In",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 464.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"print(view.scope_name(0))",
+			"print(view.scope_name((0,0)))",
+			"print(view.scope_name(new Point))",
+			"print(view.scope_name())",
+			"print(view.scope_name)",
+			"view.syntax",
+			"print(view)",
+			"view",
+			"print(view.syntax_name(view.sel()[0].b))",
+			"if (5 == 5): print(1)",
+			"if (5 == 5 == 5): print(1)",
+			"if (5 == 5 == 5): print(\"ha\")",
+			"if (5 == 5 == 5): print(\"yay\")",
+			"if (5 == 5 == 5): print(\"yay\");",
+			"if (5 == 5 == 5): print(\"yay\")",
+			"if (5 == 5 == 5): print(\"yay\"); else: print(\"noo\")",
+			"if (5 == 5 == 5): print(\"yay\")",
+			"if (5 == 5 == 5): print(\"yay\");",
+			"if (5 == 5 == 5): print \"YAY\";",
+			"if (5 == 5 == 5): print \"YAY\"",
+			"import sys; print (sys.version)",
+			"import urllib2,os; pf='Package Control.sublime-package'; ipp=sublime.installed_packages_path(); os.makedirs(ipp) if not os.path.exists(ipp) else None; urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler())); open(os.path.join(ipp,pf),'wb').write(urllib2.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read()); print('Please restart Sublime Text to finish installation')",
+			"import urllib,os; pf='Package Control.sublime-package'; ipp=sublime.installed_packages_path(); os.makedirs(ipp) if not os.path.exists(ipp) else None; urllib.install_opener(urllib.build_opener(urllib.ProxyHandler())); open(os.path.join(ipp,pf),'wb').write(urllib.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read()); print('Please restart Sublime Text to finish installation')",
+			"import urllib,os; pf='Package Control.sublime-package'; ipp=sublime.installed_packages_path(); os.makedirs(ipp) if not os.path.exists(ipp) else None; urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler())); open(os.path.join(ipp,pf),'wb').write(urllib2.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read()); print('Please restart Sublime Text to finish installation')",
+			"import urllib2,os; pf='Package Control.sublime-package'; ipp=sublime.installed_packages_path(); os.makedirs(ipp) if not os.path.exists(ipp) else None; urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler())); open(os.path.join(ipp,pf),'wb').write(urllib2.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read()); print('Please restart Sublime Text to finish installation')"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/W/Documents/autoHotkeyScripts/switchAudioDevice.ahk",
+		"/W/Documents/Programming/Firefox/test.html",
+		"/W/Documents/Programming/Firefox/addon-run.bat",
+		"/W/Documents/Programming/Firefox/metriciser/data/jquery.min.js",
+		"/W/Documents/Programming/Firefox/metriciser/lib/content_script.js",
+		"/W/Documents/Programming/Firefox/metriciser/data/content_script.js",
+		"/W/Documents/Programming/Firefox/metriciser/package.json",
+		"/W/Documents/Programming/Firefox/metriciser/README.md",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/batch.sublime-build",
+		"/W/Documents/Programming/Firefox/addon-prompt.bat",
+		"/W/Documents/Programming/Firefox/compile.bat",
+		"/W/Documents/Programming/Firefox/metriciser/.gitignore",
+		"/W/Documents/Programming/Firefox/metriciser/data/quantities.js",
+		"/W/Documents/Dropbox/Gibb/Semester 2/133 - Webapplikation realiseren/taschenrechner/rechner.js",
+		"/W/Documents/Programming/Firefox/metriciser/data/prefPanel.js",
+		"/W/Documents/Programming/Firefox/metriciser/lib/main.js",
+		"/W/Documents/Programming/Firefox/metriciser/lib/main.coffee",
+		"/W/Documents/Programming/Firefox/metriciser/data/content_script.coffee",
+		"/W/Documents/Programming/Firefox/metriciser/lib/content_script.coffee",
+		"/W/Documents/Programming/a-mazing-planner/coffee/maze/maze.coffee",
+		"/W/Documents/Programming/a-mazing-planner/haml/index.haml",
+		"/W/Documents/Programming/a-mazing-planner/compile.bat",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/mycoffee.sublime-build",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/haml.sublime-build",
+		"/W/Documents/Programming/a-mazing-planner/coffee/main.coffee",
+		"/W/Documents/Programming/a-mazing-planner/coffee/maze/overlay.coffee",
+		"/W/Documents/Programming/a-mazing-planner/coffee/maze/obstacle.coffee",
+		"/W/Documents/Programming/a-mazing-planner/js/main.js",
+		"/W/Documents/Programming/a-mazing-planner/index.html",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/coffeehaml.sublime-build",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/CoffeeCompile.sublime-settings",
+		"/W/Documents/Programming/a-mazing-planner/coffee/test.coffee",
+		"/W/Documents/Programming/a-mazing-planner/coffee/overlay.coffee",
+		"/W/Documents/Programming/a-mazing-planner/coffee/maze.coffee",
+		"/W/Documents/Programming/a-mazing-planner/coffee/obstacle.coffee",
+		"/W/Documents/Programming/a-mazing-planner/css/mazeplanner.css",
+		"/W/Documents/Programming/a-mazing-planner/index2.html",
+		"/W/Documents/Programming/a-mazing-planner/js/mazeplanner.js",
+		"/W/Documents/Programming/a-mazing-planner/compile.ps1",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/simplecoffee.sublime-build",
+		"/W/Documents/Programming/a-mazing-planner/html/mazeplanner.coffee",
+		"/W/Documents/Programming/a-mazing-planner/html/mazeplanner.js",
+		"/W/Documents/Programming/a-mazing-planner/html/start.coffee",
+		"/W/Documents/Programming/a-mazing-planner/html/mazeplanner.html",
+		"/W/Documents/Programming/a-mazing-planner/html/mazeplanner.css",
+		"/W/Documents/Dropbox/Public/mazeplanner/html/mazeplanner.js",
+		"/W/Documents/Dropbox/Public/mazeplanner/index.html",
+		"/W/Documents/Dropbox/Public/mazeplanner/html/start.js",
+		"/W/Documents/Programming/a-mazing-planner/mazeplanner.css",
+		"/W/Documents/Dropbox/Public/mazeplanner/mazeplanner.css",
+		"/W/Documents/Programming/a-mazing-planner/mazeplanner.html",
+		"/W/Documents/Programming/a-mazing-planner/fun_mazes",
+		"/W/Documents/Programming/a-mazing-planner/html/start.js",
+		"/W/Documents/Programming/a-mazing-planner/README.md",
+		"/W/Documents/Programming/a-mazing-planner/test/index.html",
+		"/W/Documents/Dropbox/Public/mazeplanner/html/mazeplanner.css",
+		"/W/Documents/Programming/a-mazing-planner/vendor/jquery.alerts.js",
+		"/W/Documents/programming/a-mazing-planner/mazeplanner.css",
+		"/W/Documents/programming/a-mazing-planner/.gitignore",
+		"/W/Documents/Dropbox/Public/mazeplanner/vendor/jquery.alerts.js",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/Side Bar.sublime-settings",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/Side Bar.sublime-settings",
+		"/W/Documents/Programming/a-mazing-planner/vendor/luminosity.js",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/SideBarEnhancements/messages/11.13.2012.1305.0.txt",
+		"/W/Documents/Programming/a-mazing-planner/vendor/jquery.min.js",
+		"/W/Documents/Programming/a-mazing-planner/vendor/html5slider.js",
+		"/W/LiberKey/MyApps/Logon WorkShop/Logons/Bar/settings.xml",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/CoffeeCompile/CoffeeCompile.sublime-settings",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/Coffee Compile/CoffeeCompile.sublime-settings",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/User/bh_core.sublime-settings",
+		"/W/Documents/Programming/Firefox/soundalert/lib/soundlistener.coffee",
+		"/W/Documents/Programming/Firefox/soundalert/lib/main.js",
+		"/W/Documents/Programming/Firefox/soundalert/data/get-text.js",
+		"/W/Documents/Programming/Firefox/soundalert/data/text-entry.html",
+		"/W/Documents/Programming/Firefox/gmailcomposefix/composefix.js",
+		"/W/Documents/Programming/Firefox/soundalert/lib/main.coffee",
+		"/W/Documents/Programming/Firefox/soundalert/package.json",
+		"/W/Documents/Programming/Firefox/gmailcomposefix/test.js",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Installed Packages/CoffeeScript.sublime-package",
+		"/W/Documents/Programming/Firefox/soundalert/chrome/content/browser.xul",
+		"/W/Documents/Programming/Firefox/soundalert/locale/en-US/translations.dtd",
+		"/W/Documents/Programming/Firefox/soundalert/defaults/preferences/pref.js",
+		"/W/Documents/Programming/Firefox/soundalert/chrome/content/linkTargetFinder.js",
+		"/W/Documents/Programming/Firefox/soundalert/chrome/content/options.xul",
+		"/W/Documents/Programming/Firefox/soundalert/chrome/chrome.manifest",
+		"/W/Documents/Programming/Firefox/soundalert/defaults/install.rdf",
+		"/W/Documents/Programming/Firefox/soundalert/skin/skin.css",
+		"/C/Users/archie/AppData/Roaming/Mozilla/Firefox/Profiles/4328wzad.default/extensions/soundextention@nadlergabriel.com",
+		"/C/Users/archie/AppData/Roaming/Sublime Text 3/Packages/Default/Preferences.sublime-settings",
+		"/C/Users/archie/Desktop/snake1/BaseItem.java",
+		"/W/Documents/Dropbox/Gibb/Semester 2/226 - Java/Unterlagen/Aufgabenblätter/Lektion 10/Zufallsgenerator.java",
+		"/W/Documents/Programming/My-Bash-Tweaks/Sublime/sublime-packages-linux.sh",
+		"/W/Documents/Programming/My-Bash-Tweaks/Sublime/messages_en",
+		"/W/Documents/Programming/My-Bash-Tweaks/Sublime/windows/Preferences.sublime-settings",
+		"/W/Documents/Programming/My-Bash-Tweaks/Sublime/preferences/Preferences.sublime-settings",
+		"/W/Documents/Programming/My-Bash-Tweaks/Sublime/sublime-packages-windows.ps1",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/messages_en",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/config",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/preferences/Preferences.sublime-settings",
+		"/W/LiberKey/MyApps/Sublime Text 2/Data/Packages/User/Preferences.sublime-settings",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/tmp_prefs.sublime-settings",
+		"/W/LiberKey/MyApps/Sublime Text 2/Data/Packages/SideBarEnhancements/Default (Windows).sublime-keymap",
+		"/W/LiberKey/MyApps/Sublime Text 2/Data/Packages/SublimeLinter/Default (Windows).sublime-keymap",
+		"/W/LiberKey/MyApps/Sublime Text 2/Data/Packages/Super Calculator/Default (Windows).sublime-keymap",
+		"/W/LiberKey/MyApps/Sublime Text 2/Data/Packages/Markdown Preview/MarkdownPreview.sublime-settings",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/sublime-packages-windows.ps1",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/sublime-packages-windows.psh",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/sublime-packages-windows.bat",
+		"/W/Documents/Programming/git/My-Bash-Tweaks/Sublime/windows/Preferences.sublime-settings",
+		"/home/archie/.config/sublime-text-2/Packages/User/Preferences.sublime-settings",
+		"/home/archie/Documents/Programming/My-Bash-Tweaks/Sublime/linux/Preferences.sublime-settings",
+		"/home/archie/Documents/Programming/My-Bash-Tweaks/Sublime/windows/Preferences.sublime-settings",
+		"/home/archie/Documents/Programming/My-Bash-Tweaks/Sublime/preferences/Preferences.sublime-settings",
+		"/home/archie/Documents/Programming/My-Bash-Tweaks/Sublime/test.awk",
+		"/home/archie/Documents/Programming/zeiterfassung/app/assets/javascripts/anytime.js",
+		"/home/archie/Documents/Programming/zeiterfassung/app/assets/javascripts/myjavascript.js",
+		"/home/archie/Documents/Programming/zeiterfassung/config/locales/de.yml",
+		"/home/archie/Documents/Programming/zeiterfassung/app/assets/javascripts/test.js",
+		"/home/archie/Documents/Programming/zeiterfassung/app/views/layouts/application.html.erb",
+		"/home/archie/Documents/Programming/zeiterfassung/app/assets/javascripts/application.js",
+		"/home/archie/Documents/Programming/zeiterfassung/app/views/work_units/new.html.erb",
+		"/home/archie/Documents/Programming/zeiterfassung/app/views/tasks/new.html.erb",
+		"/home/archie/Documents/Programming/zeiterfassung/app/views/projects/_add_user_to_project.html.erb",
+		"/home/archie/Documents/Programming/zeiterfassung/app/assets/stylesheets/theme_GreenGoblin.less",
+		"/home/archie/Documents/Programming/zeiterfassung/app/assets/javascripts/myjavascript.js.erb",
+		"/home/archie/Documents/Programming/zeiterfassung/app/assets/javascripts/i18n/translations.js",
+		"/home/archie/Documents/Programming/zeiterfassung/config/locales/en.yml"
+	],
+	"find":
+	{
+		"height": 34.0
+	},
+	"find_in_files":
+	{
+		"height": 90.0,
+		"where_history":
+		[
+			"",
+			"*.coffee",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			";//",
+			"//",
+			"ClickNext",
+			"local",
+			"j",
+			"i",
+			"tasknumber",
+			"OK_i",
+			"OK_j",
+			"J",
+			"I",
+			"Click",
+			"i",
+			"myArray",
+			"results",
+			"$",
+			"degrees",
+			"fahrenheit",
+			"süam",
+			"\"\n",
+			"$",
+			"replaced",
+			"console",
+			"celsius",
+			"prefSet",
+			"preferences",
+			"feet",
+			";",
+			"Quantity",
+			"self.data.url(\"content_script.js\")",
+			":type => \"text/javascript\"",
+			"class='label'",
+			"C:\\Users\\archie\\AppData\\Roaming\\npm",
+			"W:\\Documents\\Programming\\a-mazing-planne",
+			"W:\\Documents\\Programming\\a-mazing-planner",
+			"\"",
+			"for",
+			"label",
+			",",
+			"..",
+			"browser",
+			"C.browser",
+			"hidecursor",
+			"instant_draw",
+			"mous",
+			"current_grid_height",
+			"width",
+			"draw(",
+			"height",
+			"@obstacle_height",
+			"@obstacle",
+			"#grid_width",
+			"#widthslider",
+			"#heightslider",
+			"mousemo",
+			": ",
+			"obstacle_width",
+			"save()",
+			"console.log",
+			"console",
+			"console.log",
+			"10",
+			"$.cookie",
+			"\"626,204,2,2,50;1,1,2,2,1;1,2,1,1,99;2,1,1,1,99;2,2,1,1,99;\"",
+			"10",
+			"20",
+			"mousv",
+			"overlay",
+			"Overlay",
+			"overlay",
+			"@",
+			"event",
+			"click",
+			"calc",
+			"save(",
+			"#{attrs[0]},#{attrs[1]}",
+			"alert",
+			"alert$",
+			"alert",
+			"$.brow",
+			"vendor",
+			"js",
+			"type=\"text/javascript\"",
+			"\n",
+			"width",
+			"type=\"text/javascript\"",
+			"../",
+			"bias",
+			"movestart",
+			"mousedown",
+			"movestart",
+			"offset",
+			"+@xoffset",
+			"\"\n",
+			"@grid[x][y]",
+			"node",
+			"node.",
+			"index_target",
+			"reset",
+			"\\",
+			"type",
+			"oheight",
+			"owidth",
+			"}\"",
+			"rec_height",
+			"false",
+			"rec_width",
+			"window",
+			"width",
+			"window.width",
+			"newtop",
+			")}\"",
+			"// ==UserScript==\n// @name        Fix New Gmail Compose\n// @namespace   nadlergabriel.ch\n// @description Lets you move the new Gmail compose around\n// @include     https://mail.google.com/*\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\n// @version     1\n// ==/UserScript==; \nconole.log($(\"div.no\"));\n",
+			"\\\\",
+			"a",
+			"/",
+			"cat",
+			"echo",
+			"cat",
+			"echo",
+			"/",
+			"&&",
+			"-not",
+			"!=",
+			"read",
+			"subl_path",
+			"test",
+			"INSTALLED"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"#grid_height\n#grid_width",
+			"#grid_height\n#grid_height"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 33.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 306.0
+	},
+	"project": "neverwinter.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"read",
+				"README.md"
+			],
+			[
+				"rae",
+				"README.md"
+			],
+			[
+				"css",
+				"html\\mazeplanner.css"
+			],
+			[
+				"gem",
+				"Gemfile"
+			],
+			[
+				"anyt",
+				"app/assets/javascripts/anytime.js"
+			],
+			[
+				"myja",
+				"app/assets/javascripts/myjavascript.js"
+			],
+			[
+				"orig",
+				"Gemfile.orig"
+			],
+			[
+				"appcon",
+				"app/controllers/application_controller.rb"
+			],
+			[
+				"rout",
+				"config/routes.rb"
+			],
+			[
+				"ge",
+				"Gemfile"
+			],
+			[
+				"less",
+				"app/assets/stylesheets/bootstrap_and_overrides.css.less"
+			],
+			[
+				"my",
+				"app/assets/stylesheets/my_formtastic_changes.css.scss"
+			],
+			[
+				"apcont",
+				"app/controllers/application_controller.rb"
+			],
+			[
+				"ap",
+				"doc/app/ApplicationController.html"
+			],
+			[
+				"i1",
+				"config/i18n-js.yml"
+			],
+			[
+				"18",
+				"config/i18n-js.yml"
+			],
+			[
+				"eny",
+				"config/locales/en.yml"
+			],
+			[
+				"aperb",
+				"app/views/layouts/application.html.erb"
+			],
+			[
+				"de.y",
+				"config/locales/de.yml"
+			],
+			[
+				"en.yl",
+				"config/locales/en.yml"
+			],
+			[
+				"aplijs",
+				"app/assets/javascripts/application.js"
+			],
+			[
+				"routes",
+				"config/routes.rb"
+			],
+			[
+				"sampl",
+				"lib/tasks/sample_data.rake"
+			],
+			[
+				"sample",
+				"lib/tasks/sample_data.rake"
+			],
+			[
+				"forg",
+				"lib/forgery/forgeries/project_forgery.rb"
+			],
+			[
+				"enym",
+				"config/locales/en.yml"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"W:\\Documents\\Programming\\Maze Planner\\maze-planner.sublime-workspace"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 212.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
