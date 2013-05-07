@@ -2,28 +2,35 @@
 
 i := "i"
 j := "j"
-LeatherI := 625
-LeatherJ := 375
-OverviewI := 625
-OverviewJ := 260
-Task1_i := 865
-Task1_j := 380
-Task2_i := 1065
-Task2_j := 380
-Task3_i := 1265
-Task3_j := 380
+leather_i := 625
+leather_j := 375
+overview_i := 625
+overview_j := 260
+task1_i := 870
+task1_j := 380
+task_horizontal_offset := 200
+task_vertical_offset := 140
 
-todo_wrare_i := 1330
-todo_wrare_j := 535
 todo_i := 1335
 todo_j := 435
 search_i := 1060
 search_j := 250
 
-OK_i := 720
-OK_j := 765
+start_i := 1285
+start_j := 1000
+
+OK_i := 735
+OK_j := 770
+
+asset_i := 850
+asset_j := 390
+
+person1_i := 980
+person1_j := 450
+person_vertical_offset := 45
+person_horizontal_offset := 0
 todo_string := "gather simple pelts"
-todo_index := 1
+todo_number := 3
 
 
 steps = 5
@@ -33,99 +40,119 @@ steps = 5
 
 ClickSmooth(target_i, target_j)
 {
-  MouseMove, target_i, target_j, 25
+  MouseMove, target_i, target_j, 20
+  Sleep, 100
+  Click %target_i%, %target_j%
+  MouseMove, target_i, target_j, 20
+  Sleep, 100
+  Click %target_i%, %target_j%
   return true
 }
 
 AskItem()
 {
-  global todo_string
+  global todo_string, todo_number
   MsgBox,3, Producing, % "Do you want to " . todo_string . "?"
+  IfMsgBox Cancel
+    return false
   IfMsgBox No
     InputBox, todo_string, Searchstring, What do you want to build (search)?,,,,,,,,simple pelt
     If ErrorLevel
       return false
-  IfMsgBox Cancel
-    return false
+    InputBox, todo_number, How many?, % "How many times do you want to " . todo_string . "?"
+    If ErrorLevel
+      return false
+
   return true
 }
 
 Search()
 {
-  global search_i, search_j, todo_string
+  global search_i, search_j, todo_string, leather_i, leather_j
+  ClickSmooth(leather_i, leather_j)
+  Sleep, 200
   ClickSmooth(search_i, search_j)
+  Sleep, 200
   Send ^a
+  Sleep, 200
   Send {raw}%todo_string%
+  Sleep, 200
   Send {Enter}
 }
 
+BuildItems(number)
+{
+  global overview_i, overview_j, start_i, start_j
+  global task1_i, task1_j, task_horizontal_offset, task_vertical_offset,
+  global todo_i, todo_j
+  global person1_i, person1_j, person_horizontal_offset, person_vertical_offset
+  global asset_i, asset_j
+  ClickSmooth(overview_i, overview_j)
+  loopvar := 0
+  Loop, %number%
+  {
+      i_index:= Floor(Mod(loopvar,3))
+      j_index:= Floor(loopvar/3)
+      i_coord := task1_i+i_index*task_horizontal_offset
+      j_coord := task1_j+j_index*task_vertical_offset
+      ClickSmooth(i_coord, j_coord )
+      Sleep, 200
+      ClickSmooth(todo_i, todo_j )
+      Sleep, 200
+      ClickSmooth(asset_i, asset_j)
+      Sleep, 200
+      ClickSmooth(person1_i, person1_j+loopvar*person_vertical_offset)
+      Sleep, 200
+      ClickSmooth(start_i, start_j)
+      loopvar++
+    ;MsgBox Loop Once Over
+    Sleep, 200
+  }
+}
 
+AskFinished()
+{
+  global overview_i, overview_j,task1_i, task1_j, task_horizontal_offset, task_vertical_offset, OK_i, OK_j, number
+  MsgBox,4, Finished?, % "Do crafting goods need collecting?"
+  IfMsgBox Yes
+  {
+    InputBox, number, How many are finished?, How many task slots are finished? (only linear possible)
+    If ErrorLevel
+      return false
+    else
+    {
+      WinActivate, Neverwinter
+      ClickSmooth(overview_i, overview_j)
+      ;ClickSmooth(overview_i, overview_j)
+      loopvar := 0
+      Loop, %number%
+      {
+          i_index:= Floor(Mod(loopvar,3))
+          j_index:= Floor(loopvar/3)
+          i_coord := task1_i+i_index*task_horizontal_offset
+          j_coord := task1_j+j_index*task_vertical_offset
+          if (ClickSmooth(i_coord, j_coord )) {
+            ClickSmooth(OK_i, OK_j )
+          }
+          ;
+          loopvar++
+      }
+    }
+  }
+}
 
-^!+F5::
+F6::
+  BuildItems(todo_number)
 
-;	IfWinActive, Neverwinter
-;	{
+F5::
+  AskFinished()
     If (AskItem())
     {
       Search()
-    }
-;    if (ClickSmooth(Task1_i, Task1_j)) {
-;       ClickSmooth(OK_i, OK_j );
-;    }
-;    Sleep, 150
-;    ; Task 2
-;    if (ClickSmooth(Task2_i, Task2_j)) {
-;       ClickSmooth(OK_i, OK_j )
-;    }
-;    Sleep, 150
-;    ; Task 3
-;    if (ClickSmooth(Task3_i, Task3_j)) {
-;       ClickSmooth(OK_i, OK_j )
-;    }
-    ;
-    ;Sleep, 200
-    ;Click %OK_i% %OK_j%
-    ;Sleep, 500
+      BuildItems(todo_number)
 
-    ;MsgBox %   Leatherworking%i% . ","  . Leatherworking%j% . " - " . TaskOne%i% . "," . TaskOne%j%
-		;Click %Task1_i% %Task1_j%
-		;Sleep, 526
-;		MouseMove, 841, 384
-;		MouseMove, 769, 749
-;   MouseMove, 841, 511
-;		MouseMove, 752, 777
-;		Click 752 777
-;		MouseMove, 851, 546
-;		MouseMove, 865, 361
-;		Click 867 379
-;   Sleep, 584
-;		Sleep, 597
-;		MouseMove, 867, 379
-;		MouseMove, 1155, 411
-;		MouseMove, 1293, 430
-;		Click 1294 430
-;		Sleep, 574
-;		MouseMove, 1294, 430
-;		MouseMove, 1213, 418
-;		MouseMove, 992, 401
-;		MouseMove, 906, 390
-;		Click 855 387
-;		Sleep, 585
-;		MouseMove, 855, 387
-;		MouseMove, 906, 411
-;		MouseMove, 932, 442
-;		MouseMove, 886, 442
-;		Click 901 443
-;		Sleep, 570
-;		MouseMove, 901, 443
-;		MouseMove, 898, 465
-;		MouseMove, 895, 464
-;		MouseMove, 883, 428
-;		MouseMove, 1037, 697
-;		MouseMove, 1292, 1012
-;		Click 1319 1003
-;		Sleep, 570
-;		MouseMove, 1319, 1003
-;		MouseMove, 1294, 984
-		;Click 1254 958
-;	}
+    }
+  IfWinActive, Neverwinter
+  {
+
+  }
