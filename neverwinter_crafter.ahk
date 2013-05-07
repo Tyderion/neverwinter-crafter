@@ -38,14 +38,18 @@ steps = 5
 ; Expressions in MsgBox
 ;MsgBox % "OK: " . OK_i . ", " . OK_j
 
-ClickSmooth(target_i, target_j)
+ClickSmooth(target_i, target_j, twice = true)
 {
   MouseMove, target_i, target_j, 20
   Sleep, 100
   Click %target_i%, %target_j%
+  if (twice == true)
+  {
   MouseMove, target_i, target_j, 20
   Sleep, 100
   Click %target_i%, %target_j%
+
+  }
   return true
 }
 
@@ -132,7 +136,7 @@ AskFinished()
           i_coord := task1_i+i_index*task_horizontal_offset
           j_coord := task1_j+j_index*task_vertical_offset
           if (ClickSmooth(i_coord, j_coord )) {
-            ClickSmooth(OK_i, OK_j )
+            ClickSmooth(OK_i, OK_j , false)
           }
           ;
           loopvar++
@@ -145,14 +149,15 @@ F6::
   BuildItems(todo_number)
 
 F5::
-  AskFinished()
+  IfWinActive, Neverwinter
+  {
+    AskFinished()
     If (AskItem())
     {
+
       Search()
       BuildItems(todo_number)
 
     }
-  IfWinActive, Neverwinter
-  {
 
   }
