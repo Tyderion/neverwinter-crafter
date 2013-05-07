@@ -33,54 +33,6 @@ steps = 5
 
 ClickSmooth(target_i, target_j)
 {
-;  MouseGetPos, current_i, current_j
-;  MsgBox ClickSmooth
-;
-;
-;  global steps
-;  idiff := (target_i-current_i)/steps
-;  jdiff := (target_j-current_j)/steps
-;  looper := 0
-;  Loop, 5
-;  {
-;    looper := looper+1
-;    Random, irand,-10,10
-;    Random, jrand, -10,10
-;    MouseGetPos, current_i, current_j
-;    pos_i := current_i+idiff+irand
-;    pos_j := current_j+jdiff+jrand
-;    SendEvent {Click %pos_i%, %pos_j%}
-;    ;MouseMove, current_i+idiff+irand, current_j+jdiff+jrand, 25
-;    ;MsgBox, % "Move Number" . looper
-;  }
-
-;
-;
-
-;  ;// Do some calculations for the next click instead of just assigning the target.
-;  if (abs(current_j-target_j) < abs(jdiff))
-;  {
-;    jdiff := 0
-;  }
-;  if (abs(current_i-target_i) < abs(idiff))
-;  {
-;    idiff := 0
-;  };
-
-;  ic := current_i + idiff
-;  jc := current_j + jdiff
-;  ;MsgBox % "Diff: " . idiff . "," . jdiff . " Current is " . current_i . "," . current_j . "Clicking on " . ic . "," . jc . "And target: " . target_i . "," . target_j
-;  ; ic := target_i
-;  ; jc := target_j
-  ;Sleep, 500/steps
-  ;if (abs(jc-target_j) > 10 || abs(ic-target_i) > 10) {
-;      return ClickSmooth(target_i, target_j)
-;  } else {
-;    Click %ic% %jc%
-;    idiff := 0
-;    jdiff := 0
-;    return true
-;  }
   MouseMove, target_i, target_j, 25
   return true
 }
