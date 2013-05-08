@@ -1,4 +1,5 @@
-;Gather Simple Pelts
+#CommentFlag //
+// Gather Simple Pelts
 
 i := "i"
 j := "j"
@@ -19,7 +20,7 @@ search_j := 250
 start_i := 1285
 start_j := 1000
 
-OK_i := 735
+OK_i := 770
 OK_j := 770
 
 asset_i := 850
@@ -34,9 +35,9 @@ todo_number := 3
 
 
 steps = 5
-; Syntax
-; Expressions in MsgBox
-;MsgBox % "OK: " . OK_i . ", " . OK_j
+//  Syntax
+//  Expressions in MsgBox
+// MsgBox % "OK: " . OK_i . ", " . OK_j
 
 ClickSmooth(target_i, target_j, twice = true)
 {
@@ -72,7 +73,8 @@ AskItem()
 
 Search()
 {
-  global search_i, search_j, todo_string, leather_i, leather_j
+  global
+  //  search_i, search_j, todo_string, leather_i, leather_j
   ClickSmooth(leather_i, leather_j)
   Sleep, 200
   ClickSmooth(search_i, search_j)
@@ -86,13 +88,14 @@ Search()
 
 BuildItems(number)
 {
-  global overview_i, overview_j, start_i, start_j
-  global task1_i, task1_j, task_horizontal_offset, task_vertical_offset,
-  global todo_i, todo_j
-  global person1_i, person1_j, person_horizontal_offset, person_vertical_offset
-  global asset_i, asset_j
+  global
+//   global overview_i, overview_j, start_i, start_j
+//   global task1_i, task1_j, task_horizontal_offset, task_vertical_offset,
+//   global todo_i, todo_j
+//   global person1_i, person1_j, person_horizontal_offset, person_vertical_offset
+//   global asset_i, asset_j
   ClickSmooth(overview_i, overview_j)
-  loopvar := 0
+  local loopvar := 0
   Loop, %number%
   {
       i_index:= Floor(Mod(loopvar,3))
@@ -109,7 +112,7 @@ BuildItems(number)
       Sleep, 200
       ClickSmooth(start_i, start_j)
       loopvar++
-    ;MsgBox Loop Once Over
+    // MsgBox Loop Once Over
     Sleep, 200
   }
 }
@@ -127,7 +130,7 @@ AskFinished()
     {
       WinActivate, Neverwinter
       ClickSmooth(overview_i, overview_j)
-      ;ClickSmooth(overview_i, overview_j)
+      // ClickSmooth(overview_i, overview_j)
       loopvar := 0
       Loop, %number%
       {
@@ -138,19 +141,31 @@ AskFinished()
           if (ClickSmooth(i_coord, j_coord )) {
             ClickSmooth(OK_i, OK_j , false)
           }
-          ;
+          //
           loopvar++
       }
     }
   }
 }
 
-F6::
-  BuildItems(todo_number)
+TestOutputVar(ByRef output,input = 1)
+{
+  output := input*3
+}
 
-F5::
-  IfWinActive, Neverwinter
-  {
+^F7::
+  InputBox, input, Type a Number
+  TestOutputVar(output, input)
+  MsgBox %output%
+  return
+
+#IfWinActive, Neverwinter
+  F6::
+    BuildItems(todo_number)
+    return
+  F5::
+//   IfWinActive, Neverwinter
+//   {
     AskFinished()
     If (AskItem())
     {
@@ -160,4 +175,6 @@ F5::
 
     }
 
-  }
+  // } else Send {F5}
+#IfWinActive
+RControl & Enter::ShiftAltTab

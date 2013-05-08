@@ -163,7 +163,7 @@
 			"file": "neverwinter_crafter.ahk",
 			"settings":
 			{
-				"buffer_size": 3403,
+				"buffer_size": 3792,
 				"line_ending": "Windows"
 			}
 		},
@@ -493,6 +493,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			";",
 			")\n",
 			"MsgBox",
 			"100",
@@ -619,8 +620,7 @@
 			"// ==UserScript==\n// @name        Fix New Gmail Compose\n// @namespace   nadlergabriel.ch\n// @description Lets you move the new Gmail compose around\n// @include     https://mail.google.com/*\n// @require http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js\n// @version     1\n// ==/UserScript==; \nconole.log($(\"div.no\"));\n",
 			"\\\\",
 			"a",
-			"/",
-			"cat"
+			"/"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -649,15 +649,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3403,
+						"buffer_size": 3792,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								318,
-								318
+								498,
+								498
 							]
 						],
 						"settings":
@@ -668,26 +668,6 @@
 								"bh_angle_center",
 								"bh_angle_open",
 								"bh_angle_close",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
 								"bh_curly",
 								"bh_curly_center",
 								"bh_curly_open",
@@ -703,8 +683,29 @@
 								"bh_tag",
 								"bh_tag_center",
 								"bh_tag_open",
-								"bh_tag_close"
+								"bh_tag_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close"
 							],
+							"spell_check": true,
 							"syntax": "Packages/C++/C.tmLanguage",
 							"tab_size": 2,
 							"translate_tabs_to_spaces": true
