@@ -19,6 +19,8 @@ starting := true
 
 firstrun = true
 
+Menu, Tray, Icon, Neverwinter_114.ico
+
 names := ["task", "task_offset", "todo", "search", "start", "OK_button", "asset", "person", "leather", "overview", "person", "todo_config", "person_offset"]
 defaults := ["870,380", "200,140", "1335,435", "1285, 1000", "770, 770", "770,770", "850,390", "980,450", "625,375", "625,260", "0,45", "gather simple pelts,3", "0,45"]
 length := 13
@@ -30,10 +32,20 @@ offset_config := "horizontal"
 
 Hotkey, F12,, Off
 
+
+EnsureActiveWindow()
+{
+  If (!WinActive("ahk_class CrypticWindowClassDX0"))
+  {
+    WinActivate ahk_class CrypticWindowClassDX0
+    WinWaitActive  ahk_class CrypticWindowClassDX0
+  }
+}
+
 Configure2()
 {
   global
-  WinActivate, Neverwinter
+  EnsureActiveWindow()
   name := names[current_configuring]
   MouseGetPos, x, y
   if (name != "task_offset")
@@ -125,10 +137,11 @@ TestConfig()
         current_configuring = %A_index%
         MsgBox, % "Please move your mouse to the " . name . " button and then Press F12"
         Hotkey, F12, , On
-        return
+        return false
       }
     }
   }
+  return true
 }
 
 LoadConfig()
@@ -176,14 +189,14 @@ SaveConfig()
   IniWrite, false, neverwinter_crafter.ini, MainConfig, firstrun
 }
 
-ClickSmooth(target, num_clicks=2)
+ClickSmooth(target, num = 1)
 {
-  ;MsgBox % "target: " . target[1] . "," . target[2]
   MouseMove, target[1], target[2], 20
-  Loop, %num_clicks%
+  if (num == 1)
   {
+    Click down
     Sleep, 100
-    Click target[1], target[2]
+    Click up
   }
   return true
 }
@@ -192,6 +205,7 @@ ClickSmooth(target, num_clicks=2)
 AskItem()
 {
   global todo_config ;todo_string, todo_number
+  EnsureActiveWindow()
   MsgBox,3, Producing, % "Do you want to " . todo_config[1] . "?"
   IfMsgBox Cancel
     return false
@@ -207,6 +221,7 @@ AskItem()
     If (todo_config[2] < 1)
       return false
 
+  SaveConfig()
   return true
 }
 
@@ -229,6 +244,7 @@ BuildItems(number)
 {
   global
   ClickSmooth(overview)
+  MsgBox Wait
   Loop, %number%
   {
       local index := [Floor(Mod(A_Index-1,3)),Floor((A_Index-1)/3)]
@@ -240,7 +256,7 @@ BuildItems(number)
       pcoord[2] := person[2]+(A_Index-1)*person_offset[2]
 
       ;MsgBox, % "Task: " . task[1] . "," . task[2] . " - Coord: " . coord[1] . "," . coord[2]
-      ;MsgBox, % "PersonCoord: " . pcoord[1] . "," . pcoord[2] . " - Person: " . person[1] . "," . person[2]
+      MsgBox, % "PersonCoord: " . pcoord[1] . "," . pcoord[2] . " - Person: " . person[1] . "," . person[2]
       ClickSmooth(coord)
       Sleep, 200
       ClickSmooth(todo)
@@ -266,7 +282,7 @@ AskFinished()
       return false
     else
     {
-      WinActivate, Neverwinter
+      EnsureActiveWindow()
       ClickSmooth(overview)
       loopvar := 0
       Loop, %number%
@@ -275,7 +291,7 @@ AskFinished()
           coord := [task[1]+index[1]*task_offset[1],task[2]+index[2]*task_offset[2]]
           ;MsgBox, % "Task: " . task[1] . "," . task[2] . " - Coord: " . coord[1] . "," . coord[2]
           if (ClickSmooth(coord )) {
-            ClickSmooth(OK_button , 1)
+            ClickSmooth(OK_button)
           }
           ;
           loopvar++
@@ -290,28 +306,48 @@ TestOutputVar(ByRef output,input = 1)
 }
 
 
+TestClicks() {
+  global
+  Loop, 10
+  {
+    ClickSmooth(overview)
+    Sleep, 150
+    ClickSmooth(leather)
+    Sleep, 150
+  }
+}
+
 
 starting := false
 LoadConfig()
 SaveConfig()
+
 
 F12::
   Hotkey, F12,, Off
   Configure2()
   return
 F10::
-  Test()
+  BuildItems(4)
   return
 F9::
   LoadConfig()
   TestConfig()
   return
 
-#IfWinActive, Neverwinter
+F7::
+  WinActivate ahk_class CrypticWindowClassDX0
+  return
+
+#IfWinActive ahk_class CrypticWindowClassDX0
   F8::
     SaveConfig()
     return
 
+
+  F9::
+    TestClicks()
+    return
 
   ^+F4::
     MsgBox, 4, Reset, % "Do you want to reset and reconfigure all the saved values?"
@@ -323,19 +359,26 @@ F9::
       }
 
 
-
+  F4::
+    ;BuildItems(todo_config[2])
 
   F6::
-    BuildItems(todo_number)
+    AskItem()
+    Search()
     return
   F5::
-    AskFinished()
-    If (AskItem())
-    {
+    If (TestConfig()) {
+      AskFinished()
+      EnsureActiveWindow()
+      MsgBox, % WinActive("ahk_class CrypticWindowClassDX0")
+      If (AskItem())
+      {
 
-      Search()
-      BuildItems(todo_number)
+        Search()
+        MsgBox % todo_config[2]
+        BuildItems(todo_config[2])
 
+      }
     }
 
 #IfWinActive
