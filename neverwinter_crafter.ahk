@@ -54,6 +54,27 @@ ConfigureTaskOffset()
 }
 
 
+Reset()
+{
+  global
+  task := [ 0, 0]
+  task_offset := [200,140]
+  todo := [0,0]
+  search := [0,0]
+  start := [0, 0]
+  OK_button := [0, 0]
+  asset := [0, 0]
+  person := [0, 0]
+  leather := [0, 0]
+  overview := [0, 0]
+
+  todo_config := ["gather simple pelts", 0]
+  ;todo_string := "gather simple pelts"
+  ;todo_number := 3
+
+
+  person_offset := [0,45]
+}
 
 
 LoadConfig()
@@ -229,31 +250,41 @@ TestOutputVar(ByRef output,input = 1)
 
 
 
-F12::
-  Hotkey, F12,, Off
-  Configure2()
-
 starting := false
-F8::
-  SaveConfig()
-  return
+LoadConfig()
 
-F9::
-  LoadConfig()
-  return
+#IfWinActive, Neverwinter
+  F12::
+    Hotkey, F12,, Off
+    Configure2()
 
-F10::
-  Test()
-  return
+  F8::
+    SaveConfig()
+    return
 
 
-;#IfWinActive, Neverwinter
+  ^+F4::
+    MsgBox, 4, Reset, % "Do you want to reset and reconfigure all the saved values?"
+    IfMsgBox Yes
+      {
+        Reset()
+        SaveConfig()
+        LoadConfig()
+      }
+
+  F9::
+    LoadConfig()
+    return
+
+  F10::
+    Test()
+    return
+
+
   F6::
     BuildItems(todo_number)
     return
   F5::
-;   IfWinActive, Neverwinter
-;   {
     AskFinished()
     If (AskItem())
     {
@@ -263,6 +294,5 @@ F10::
 
     }
 
-  ; } else Send {F5}
 #IfWinActive
 RControl & Enter::ShiftAltTab
