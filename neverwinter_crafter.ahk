@@ -3,7 +3,7 @@
 
 ;task := [ 870, 380]
 task := [ 0, 0]
-task_offset := [200,140]
+task_offset := [0,0]
 todo := [0,0]
 search := [0,0]
 start := [0, 0]
@@ -13,8 +13,8 @@ person := [0, 0]
 leather := [0, 0]
 overview := [0, 0]
 
-todo_config := ["gather simple pelts", 0]
-person_offset := [0,45]
+todo_config := [0, 0]
+person_offset := [0,0]
 starting := true
 
 firstrun = true
@@ -35,10 +35,13 @@ Hotkey, F12,, Off
 
 EnsureActiveWindow()
 {
-  If (!WinActive("ahk_class CrypticWindowClassDX0"))
+  If (WinExist("ahk_class CrypticWindowClassDX0"))
   {
-    WinActivate ahk_class CrypticWindowClassDX0
-    WinWaitActive  ahk_class CrypticWindowClassDX0
+    If (!WinActive("ahk_class CrypticWindowClassDX0"))
+    {
+      WinActivate ahk_class CrypticWindowClassDX0
+      WinWaitActive  ahk_class CrypticWindowClassDX0
+    }
   }
 }
 
@@ -48,33 +51,50 @@ Configure2()
   EnsureActiveWindow()
   name := names[current_configuring]
   MouseGetPos, x, y
-  if (name != "task_offset")
+
+  if (name != "task_offset" && name != "person_offset")
   {
     %name%[1] := x
     %name%[2] := y
-    MsgBox, % "Successfully configured " . name . " as : " . %name%[1] . "," . %name%[2]
+    MsgBox, % "Successfully configured " . name ;. " as : " . %name%[1] . "," . %name%[2]
     configuring := false
-    ;MsgBox %name%
     If (name == "task")
     {
       ConfigureTaskOffset()
       return
     }
+    If (name == "person")
+    {
+      offset_config := "vertical"
+      ConfigurePersonOffset()
+      return
+    }
     ;SaveConfig()
     ;TestConfig()
   } else {
+    if (name == "person_offset")
+    {
+      var := "person"
+    } else
+    {
+      var := "task"
+    }
     if (offset_config == "horizontal")
     {
-      %name%[1] := Abs(task[1] - x)
+      %name%[1] := Abs(%var%[1] - x)
       offset_config := "vertical"
       ConfigureTaskOffset()
       return
     }
     else if (offset_config == "vertical")
       {
-        %name%[2] := Abs(task[2] - y)
+        if (name == "person_offset")
+        {
+          %name%[1] := 0
+        }
+        %name%[2] := Abs(%var%[2] - y)
       }
-    MsgBox, % " New Offset is " . %name%[1] . "," . %name%[2]
+    MsgBox, % " Successfully configured " . var " Offset"
   }
     SaveConfig()
     TestConfig()
@@ -83,7 +103,7 @@ Configure2()
 
 ConfigureTaskOffset()
 {
-  global task_offset, task, offset_config,current_configuring
+  global task_offset, task, offset_config
 
   MsgBox, % "Moving mouse to the location of the task button"
   ClickSmooth(task,0)
@@ -95,9 +115,29 @@ ConfigureTaskOffset()
   ClickSmooth(task_two,0)
   MsgBox, 4, Correct? , Is the mouse on the same position (relative to the button) as on the first task?
   IfMsgBox No
-    current_configuring := 2
-    MsgBox, Move,  Please move the mouse to the correct Position and press F12
-    Hotkey, F12,, On
+    {
+      current_configuring := 2
+      MsgBox, Move,  Please move the mouse to the correct Position and press F12
+      Hotkey, F12,, On
+    }
+}
+ConfigurePersonOffset()
+{
+  global person_offset, person, offset_config
+
+  MsgBox, % "Moving mouse to the location of the first Person button"
+  ClickSmooth(person,0)
+  MsgBox, % "Moving mouse to the projected location of the next " . offset_config . " person button"
+  if (offset_config == "vertical")
+    task_two := [person[1], person[2]+person_offset[2]]
+  ClickSmooth(task_two,0)
+  MsgBox, 4, Correct? , Is the mouse on the same position (relative to the button) as on the first task?
+  IfMsgBox No
+    {
+      current_configuring := 13
+      MsgBox, Move,  Please move the mouse to the correct Position and press F12
+      Hotkey, F12,, On
+    }
 }
 
 
@@ -132,7 +172,14 @@ TestConfig()
       configuring := true
       current_configuring = %A_index%
       name := names[current_configuring]
-      If (name != "task_offset" && name != "person_offset")
+        If (name == "todo_config")
+      {
+        InputBox, search, Searchstring, % "What should be build (== searched) ?"
+        todo_config[1] := search
+        InputBox, search, How many, % "How many should be built?"
+        todo_config[2] := search
+      }
+      else If (name != "task_offset" && name != "person_offset")
       {
         current_configuring = %A_index%
         MsgBox, % "Please move your mouse to the " . name . " button and then Press F12"
@@ -141,6 +188,7 @@ TestConfig()
       }
     }
   }
+  SaveConfig()
   return true
 }
 
