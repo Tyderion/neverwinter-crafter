@@ -375,27 +375,27 @@ F12::
   Hotkey, F12,, Off
   Configure2()
   return
-F10::
-  BuildItems(4)
-  return
-F9::
-  LoadConfig()
-  TestConfig()
-  return
-
-F7::
-  WinActivate ahk_class CrypticWindowClassDX0
-  return
+;F10::
+;  BuildItems(4)
+;  return
+;F9::
+;  LoadConfig()
+;  TestConfig()
+;  return
+;
+;F7::
+;  WinActivate ahk_class CrypticWindowClassDX0
+;  return
 
 #IfWinActive ahk_class CrypticWindowClassDX0
-  F8::
-    SaveConfig()
-    return
-
-
-  F9::
-    TestClicks()
-    return
+;  F8::
+;    SaveConfig()
+;    return
+;
+;
+;  F9::
+;    TestClicks()
+;    return
 
   ^+F4::
     MsgBox, 4, Reset, % "Do you want to reset and reconfigure all the saved values?"
@@ -407,13 +407,13 @@ F7::
       }
 
 
-  F4::
+  ;F4::
     ;BuildItems(todo_config[2])
 
-  F6::
-    AskItem()
-    Search()
-    return
+;  F6::
+;    AskItem()
+;    Search()
+;    return
   F5::
     If (TestConfig()) {
       AskFinished()
