@@ -1,7 +1,3 @@
-
-; Gather Simple Pelts
-
-;task := [ 870, 380]
 task := [ 0, 0]
 task_offset := [0,0]
 todo := [0,0]
@@ -17,9 +13,6 @@ todo_config := [0, 0]
 person_offset := [0,0]
 
 asset_offset := [110,45]
-
-starting := true
-
 firstrun = true
 
 Menu, Tray, Icon, Neverwinter_114.ico
@@ -35,6 +28,44 @@ offset_config := "horizontal"
 
 Hotkey, F12,, Off
 
+ResetChoice := ""
+
+str := ""
+Loop, %length%
+{
+  name := names[A_Index]
+  If (name != "person_offset" && name != "asset_offset" && name != "task_offset" && name != "todo_config")
+  {
+    str := str . names[A_Index]
+    if (A_Index < length)
+    {
+      str := str . "|"
+    }
+  }
+}
+
+Gui, Add, Text,, Plese select the coordinates you want to reset.
+Gui, Add, DropDownList, vResetChoice Sort Choose1, %str%
+Gui, Add, Button, Default, OK
+str = ""
+
+
+
+LoadConfig()
+SaveConfig()
+return
+
+; Labels and stuff
+ButtonOK:
+  Gui, Submit
+  MsgBox %ResetChoice%
+  %ResetChoice% := [0,0]
+  TestConfig()
+  return ; End TEH Label
+
+GuiEscape:
+  Gui, Cancel
+  return
 
 EnsureActiveWindow()
 {
@@ -410,61 +441,6 @@ FillAssets(num)
 
 }
 
-LoadConfig()
-
-
-ResetChoice := ""
-ResetOneCoordinate()
-{
-  Gui, Show,,Reset Coordinate
-}
-
-varExist(ByRef v)
-{ ; Requires 1.0.46+
-   return &v = &n ? 0 : v = "" ? 2 : 1
-}
-
-str := ""
-Loop, %length%
-{
-  name := names[A_Index]
-  If (name != "person_offset" && name != "asset_offset" && name != "task_offset" && name != "todo_config")
-  {
-    str := str . names[A_Index]
-    if (A_Index < length)
-    {
-      str := str . "|"
-    }
-  }
-}
-
-Gui, Add, Text,, Plese select the coordinates you want to reset.
-Gui, Add, DropDownList, vResetChoice Sort Choose1, %str%
-Gui, Add, Button, Default, OK
-
-
-
-
-if (!starting)
-{
-  ; Labels and stuff
-  ButtonOK:
-    Gui, Submit
-    MsgBox %ResetChoice%
-    %ResetChoice% := [0,0]
-    TestConfig()
-    return ; End TEH Label
-}
-
-
-
-
-
-
-
-
-starting := false
-SaveConfig()
 
 
 F12::
@@ -476,7 +452,7 @@ F10::
   FillAssets(4)
   return
 F9::
-  ResetOneCoordinate()
+  Gui, Show,,Reset Coordinate
   return
 ;
 ;F7::
