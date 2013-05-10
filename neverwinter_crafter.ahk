@@ -15,14 +15,17 @@ overview := [0, 0]
 
 todo_config := [0, 0]
 person_offset := [0,0]
+
+asset_offset := [110,45]
+
 starting := true
 
 firstrun = true
 
 Menu, Tray, Icon, Neverwinter_114.ico
 
-names := ["task", "task_offset", "todo", "search", "start", "OK_button", "asset", "person", "leather", "overview", "person", "todo_config", "person_offset"]
-defaults := ["870,380", "200,140", "1335,435", "1285, 1000", "770, 770", "770,770", "850,390", "980,450", "625,375", "625,260", "0,45", "gather simple pelts,3", "0,45"]
+names := ["task", "task_offset", "todo", "search", "start", "OK_button", "asset", "person", "leather", "overview",  "todo_config", "person_offset", "asset_offset"]
+defaults := ["870,380", "200,140", "1335,435", "1285, 1000", "770, 770", "770,770", "850,390", "980,450", "625,375", "625,260", "gather simple pelts,3", "0,45", "110, 40"]
 length := 13
 
 
@@ -52,7 +55,7 @@ Configure2()
   name := names[current_configuring]
   MouseGetPos, x, y
 
-  if (name != "task_offset" && name != "person_offset")
+  if (name != "task_offset" && name != "person_offset" && name != "asset_offset")
   {
     %name%[1] := x
     %name%[2] := y
@@ -189,7 +192,7 @@ TestConfig()
     }
   }
   SaveConfig()
-  return true
+  ;return true
 }
 
 LoadConfig()
@@ -279,6 +282,7 @@ Search()
   ClickSmooth(leather)
   Sleep, 200
   ClickSmooth(search)
+  MsgBox, % "Clicked on search"
   Sleep, 200
   Send ^a
   Sleep, 200
@@ -309,9 +313,10 @@ BuildItems(number)
       Sleep, 200
       ClickSmooth(todo)
       Sleep, 200
-      ClickSmooth(asset)
-      Sleep, 200
-      ClickSmooth(pcoord)
+      FillAssets(1)
+      ;ClickSmooth(asset)
+      ;Sleep, 200
+      ;ClickSmooth(pcoord)
       Sleep, 200
       ClickSmooth(start)
       loopvar++
@@ -366,8 +371,99 @@ TestClicks() {
 }
 
 
-starting := false
+SearchAsset(topleft)
+{
+  ImageSearch, posi, posj,topleft[1],topleft[2],1920,1200,*16 asset_button.png
+  array := [posi+15, posj+5]
+  return array
+}
+FillAssets(num)
+{
+  global asset_offset
+  ;MsgBox, % asset_offset
+  if (num < 1)
+    {
+      return
+  }
+  topleft := [0,0]
+
+  Loop, %num%
+  {
+    EnsureActiveWindow()
+    position := SearchAsset(topleft)
+    ;MsgBox, % "position = " . position[1] . "," . position[2] . "Offset = " . asset_offset[1] . "," . asset_offset[2]
+
+    ClickSmooth(position,1)
+    ClickSmooth([ position[1]+asset_offset[1], position[2]+asset_offset[2]], 1)
+
+    if (A_Index == 1)
+      topleft := [0, position[2]+asset_offset[2]]
+    else
+      topleft := [position[1], topleft[2]]
+
+    ClickSmooth(topleft,1)
+    MsgBox, "At Topleft"
+
+  }
+
+
+
+}
+
 LoadConfig()
+
+
+ResetChoice := ""
+ResetOneCoordinate()
+{
+  Gui, Show,,Reset Coordinate
+}
+
+varExist(ByRef v)
+{ ; Requires 1.0.46+
+   return &v = &n ? 0 : v = "" ? 2 : 1
+}
+
+str := ""
+Loop, %length%
+{
+  name := names[A_Index]
+  If (name != "person_offset" && name != "asset_offset" && name != "task_offset" && name != "todo_config")
+  {
+    str := str . names[A_Index]
+    if (A_Index < length)
+    {
+      str := str . "|"
+    }
+  }
+}
+
+Gui, Add, Text,, Plese select the coordinates you want to reset.
+Gui, Add, DropDownList, vResetChoice Sort Choose1, %str%
+Gui, Add, Button, Default, OK
+
+
+
+
+if (!starting)
+{
+  ; Labels and stuff
+  ButtonOK:
+    Gui, Submit
+    MsgBox %ResetChoice%
+    %ResetChoice% := [0,0]
+    TestConfig()
+    return ; End TEH Label
+}
+
+
+
+
+
+
+
+
+starting := false
 SaveConfig()
 
 
@@ -375,13 +471,13 @@ F12::
   Hotkey, F12,, Off
   Configure2()
   return
-;F10::
-;  BuildItems(4)
-;  return
-;F9::
-;  LoadConfig()
-;  TestConfig()
-;  return
+F10::
+  ;SearchAsset([0,0])
+  FillAssets(4)
+  return
+F9::
+  ResetOneCoordinate()
+  return
 ;
 ;F7::
 ;  WinActivate ahk_class CrypticWindowClassDX0
@@ -418,7 +514,7 @@ F12::
     If (TestConfig()) {
       AskFinished()
       EnsureActiveWindow()
-      MsgBox, % WinActive("ahk_class CrypticWindowClassDX0")
+      ;MsgBox, % WinActive("ahk_class CrypticWindowClassDX0")
       If (AskItem())
       {
 
