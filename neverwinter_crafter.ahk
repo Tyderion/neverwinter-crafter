@@ -22,7 +22,180 @@ defaults := ["870,380", "200,140", "1335,435", "1285, 1000", "770, 770", "770,77
 length := 13
 
 
-configuring := false
+special_names := ["task_offset", "asset_offset", "person_offset", "todo_config"]
+special_length := 4
+
+class Configuration
+{
+
+  static coord_names := ["task_button",  "continue_button", "search_field", "start_button", "OK_button", "person_button", "leathermaking_button", "overview_button"]
+
+  ;static default_coords := ["870,380",  "1335,435", "1064,253", "1285,998", "751,786", "986,443", "640,369", "357,363"]
+
+  static offset_names := ["task_offset", "person_offset", "job_offset"]
+  ;static default_offsets :=[] "200,140", "0,45", "110, 40"]
+
+  static other_names := ["preset"]
+
+
+
+
+
+  ;task_button := "hahaha it worked!"
+
+
+  __New(filename = "neverwinter_crafter_new.ini")
+  {
+    this["filename"] := filename
+    For index, value in Configuration.coord_names
+    {
+      this[value] := [0,0] ; Configuration.default_coords[index]
+    }
+
+    ;task_button := [0,0]
+    For index, value in Configuration.offset_names
+    {
+      this[value] := [0,0] ; Configuration.default_coords[index]
+    }
+
+    For index, value in Configuration.other_names
+    {
+      if (value = "presets")
+      {
+        this[value] := "test" ; [["gather tough pelts", 3]]
+      }
+    }
+  }
+
+  save()
+  {
+
+    For key, value in this
+    {
+      If RegExMatch(key, "button|field|offset")
+      {
+        str := value[1] . "," . value[2]
+        IniWrite, % str, % this.filename, MainConfig, % key
+      }
+      else If InStr(key, "preset")
+      {
+        For key, val in this.presets ; For each preset entry
+        { ; Add a number as a suffix
+          key := "preset" . a_index-1
+          str := ""
+          For key2, val2 in val ; Append the value in the form "string,number"
+             If (Mod(a_index, 2) == 1) {
+              ; The first and every second entry after it, should be names
+              If (a_index > 2)
+              {
+                str := str . ","
+              }
+              str := str . val2
+            } else {
+              ; The others should be numbers
+              str := str . "," . val2
+            }
+          IniWrite,% str, % this.filename, Presets, % key
+        }
+      }
+    }
+  }
+
+  debug()
+  {
+    str := ""
+    num_presets := 0
+    For key, value in this
+      If RegExMatch(key, "button|field|offset")
+          str := str . key . "=" . value[1] . "," . value[2] . "`n"
+      else If InStr(key, "preset")
+        {
+          For index, val in this.presets ; For each preset entry
+          { ; Add a number as a suffix
+            temp_str := "preset" . a_index-1 . "= "
+            For index2, val2 in val ; Append the value in the form "string * number"
+            {
+              If (Mod(a_index, 2) == 1) {
+                ; The first and every second entry after it, should be names
+                If (a_index > 2)
+                {
+                  temp_str := temp_str . " + "
+                }
+                temp_str := temp_str . val2
+              } else {
+                ; The others should be numbers
+                temp_str := temp_str . " * " . val2
+              }
+            }
+            str := str .  temp_str . "`n"
+          }
+        }
+    MsgBox % str
+  }
+
+  load(filename = "neverwinter_crafter_new.ini")
+  {
+    this["filename"] := filename
+    For index, key in Configuration.coord_names
+    {
+      IniRead, value, % filename, MainConfig, % key
+      StringSplit, test, value , `, ,
+      this[key] := [test1, test2]
+    }
+
+    For index, key in Configuration.offset_names
+    {
+      IniRead, value,% filename, MainConfig,% key
+      StringSplit, test, value , `, ,
+      this[key] := [test1, test2]
+    }
+
+    For index, key in Configuration.other_names
+    {
+      if InStr(key, "preset")
+      {
+        ; Grab all entries under the Presets Section
+        IniRead, value,% filename, Presets
+        ; Split the entries at new lines
+        StringSplit, presetArray, value, `n
+        this["presets"] := []
+        ; For each entry
+        Loop, %presetArray0%
+        {
+            value := []
+            ; Split at = to have the value in the second one
+            StringSplit, preset, presetArray%a_index%, =
+            ; Split the values at a , to have each value seperated
+            StringSplit, preset_conf, preset2, `,
+            ; For each value
+            Loop, %preset_conf0%
+            {
+              ; Write it to the array
+              value[a_index] := preset_conf%a_index%
+            }
+
+            this.presets[a_index] := value
+        }
+      }
+    }
+
+  }
+
+}
+
+test := new Configuration()
+test.debug()
+test.load()
+test.debug()
+test.save()
+;For index, value in Configuration.coord_names
+;{
+  ;MsgBox % "outside: " . value . "=" . test[value][1] . "," . test[value][2]
+;}
+
+
+
+configuring := [["task", "absolute"], ["task_offset", "relative"]]
 current_configuring := 0
 offset_config := "horizontal"
 
@@ -91,7 +264,6 @@ Configure2()
     %name%[1] := x
     %name%[2] := y
     MsgBox, % "Successfully configured " . name ;. " as : " . %name%[1] . "," . %name%[2]
-    configuring := false
     If (name == "task")
     {
       ConfigureTaskOffset()
@@ -203,7 +375,6 @@ TestConfig()
     ;MsgBox, % name . ": " . value
     If (%name%[1] == "ERROR" or value == "0,0")
     {
-      configuring := true
       current_configuring = %A_index%
       name := names[current_configuring]
         If (name == "todo_config")
