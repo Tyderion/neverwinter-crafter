@@ -25,6 +25,46 @@ length := 13
 special_names := ["task_offset", "asset_offset", "person_offset", "todo_config"]
 special_length := 4
 
+
+
+class Preset
+{
+  name := "A Preset"
+  config := []
+  config_length := 0
+
+  __New(fromString)
+  {
+    StringSplit, name_val, fromString, :
+    this.name := name_val1
+    StringSplit, steps, name_val2, `;
+    this.config := []
+    Loop, %steps0%
+    {
+      MsgBox % steps%a_index%
+      if (steps%a_index% != "")
+      {
+        this.config_length++
+        conf := []
+        StringSplit, conf, steps%a_index%, `,
+        this.config[a_index] := {where:conf1,search:conf2,number:conf3}
+      }
+    }
+  }
+
+  toString()
+  {
+    str := this.name . ":"
+    For index, val in this.config
+    {
+      if (index > 1 && index <= this.config_length)
+        str := str . ";"
+      str := str . val["where"] . "," . val["search"] . "," . val["number"]
+    }
+    return str
+  }
+}
+
 class Configuration
 {
 
@@ -36,13 +76,6 @@ class Configuration
   ;static default_offsets :=[] "200,140", "0,45", "110, 40"]
 
   static other_names := ["preset"]
-
-
-
-
-
-  ;task_button := "hahaha it worked!"
-
 
   __New(filename = "neverwinter_crafter_new.ini")
   {
@@ -79,23 +112,9 @@ class Configuration
       }
       else If InStr(key, "preset")
       {
-        For key, val in this.presets ; For each preset entry
-        { ; Add a number as a suffix
-          key := "preset" . a_index-1
-          str := ""
-          For key2, val2 in val ; Append the value in the form "string,number"
-             If (Mod(a_index, 2) == 1) {
-              ; The first and every second entry after it, should be names
-              If (a_index > 2)
-              {
-                str := str . ","
-              }
-              str := str . val2
-            } else {
-              ; The others should be numbers
-              str := str . "," . val2
-            }
-          IniWrite,% str, % this.filename, Presets, % key
+        For index, preset in this.presets ; For each preset entry
+        { ; Write it to the ini file with a prefix
+          IniWrite,% preset.toString(), % this.filename, Presets, % "preset" . a_index-1
         }
       }
     }
@@ -110,24 +129,10 @@ class Configuration
           str := str . key . "=" . value[1] . "," . value[2] . "`n"
       else If InStr(key, "preset")
         {
+
           For index, val in this.presets ; For each preset entry
           { ; Add a number as a suffix
-            temp_str := "preset" . a_index-1 . "= "
-            For index2, val2 in val ; Append the value in the form "string * number"
-            {
-              If (Mod(a_index, 2) == 1) {
-                ; The first and every second entry after it, should be names
-                If (a_index > 2)
-                {
-                  temp_str := temp_str . " + "
-                }
-                temp_str := temp_str . val2
-              } else {
-                ; The others should be numbers
-                temp_str := temp_str . " * " . val2
-              }
-            }
-            str := str .  temp_str . "`n"
+            str := str . "preset" . a_index-1 . "= " . val.toString() . "`n"
           }
         }
     MsgBox % str
@@ -162,19 +167,8 @@ class Configuration
         ; For each entry
         Loop, %presetArray0%
         {
-            value := []
-            ; Split at = to have the value in the second one
             StringSplit, preset, presetArray%a_index%, =
-            ; Split the values at a , to have each value seperated
-            StringSplit, preset_conf, preset2, `,
-            ; For each value
-            Loop, %preset_conf0%
-            {
-              ; Write it to the array
-              value[a_index] := preset_conf%a_index%
-            }
-
-            this.presets[a_index] := value
+            this.presets[a_index] := new Preset(preset2)
         }
       }
     }
