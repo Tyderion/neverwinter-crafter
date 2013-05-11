@@ -58,14 +58,13 @@ class Crafter
   Send {Enter}
   }
 
-  build(number)
+  build(number, start_with_task = 1)
   {
     ;MsgBox % "Building " . number
-    this.current_asset := 1
     this.click(this.config.overview_button)
     Loop, %number%
     {
-      index := [Floor(Mod(A_Index-1,3)),Floor((A_Index-1)/3)]
+      index := [Floor(Mod(start_with_task-1,3)),Floor((start_with_task-1)/3)]
       coord = [0,0]
       coord := [this.config.task_button[1]+index[1]*this.config.task_offset[1],this.config.task_button[2]+index[2]*this.config.task_offset[2]]
 
@@ -158,7 +157,7 @@ class Preset
     For index, conf in this.config
     {
       crafter.search(conf.search, crafter.config.leathermaking_button)
-      crafter.build(conf.number)
+      crafter.build(conf.number, index)
     }
 
   }
@@ -724,13 +723,10 @@ F12::
   Hotkey, F12,, Off
   Configure2()
   return
-F10::
-  crafter.config.show()
-  return
-F9::
-  Gui, Reset:Default
-  Gui, Show,,Reset Coordinate
-  return
+;F9::
+;  Gui, Reset:Default
+;  Gui, Show,,Reset Coordinate
+;  return
 ;
 ;F7::
 ;  WinActivate ahk_class CrypticWindowClassDX0
@@ -746,47 +742,56 @@ F9::
 ;    TestClicks()
 ;    return
 
-  ^+F4::
-    MsgBox, 4, Reset, % "Do you want to reset and reconfigure all the saved values?"
-    IfMsgBox Yes
-      {
-        Reset()
-        SaveConfig()
-        TestConfig()
-      }
+;  ^+F4::
+;    MsgBox, 4, Reset, % "Do you want to reset and reconfigure all the saved values?"
+;    IfMsgBox Yes
+;      {
+;        Reset()
+;        SaveConfig()
+;        TestConfig()
+;      }
 
 
   ;F4::
     ;BuildItems(todo_config[2])
 
-  F4::
+  F10::
+    crafter.config.show()
+    return
+  F3::
+    crafter.config.current_asset := 1
     crafter.collect(2)
     crafter.config.presets[1].build(crafter)
     return
-
-  F6::
-    ;AskItem()
-    todo_config[1] := "gather tough pelts"
-    todo_config[2] := 2
-    number := 2
-    EnsureActiveWindow()
-    Collect()
-    Search()
-    BuildItems(todo_config[2])
-    Send N
+  F4::
+    crafter.config.current_asset := 1
+    crafter.collect(2)
+    crafter.config.presets[2].build(crafter)
     return
-  F5::
-    If (TestConfig()) {
-      AskFinished()
-      EnsureActiveWindow()
-      If (AskItem())
-      {
 
-        Search()
-        ;MsgBox % todo_config[2]
-        BuildItems(todo_config[2])
-
-      }
-    }
+;  F6::
+;    ;AskItem()
+;    todo_config[1] := "gather tough pelts"
+;    todo_config[2] := 2
+;    number := 2
+;    EnsureActiveWindow()
+;    Collect()
+;    Search()
+;    BuildItems(todo_config[2])
+;    Send N
+;    return
+;  F5::
+;    If (TestConfig()) {
+;      AskFinished()
+;      EnsureActiveWindow()
+;      If (AskItem())
+;      {
+;
+;        Search()
+;        ;MsgBox % todo_config[2]
+;        BuildItems(todo_config[2])
+;
+;      }
+;    }
 
 #IfWinActive
