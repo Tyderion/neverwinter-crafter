@@ -114,7 +114,11 @@ class Crafter
         this.ensureActiveWindow()
         position := this.searchAsset(topleft)
         this.click(position,1)
-        this.click([ position[1]+asset_offset[1], position[2]+asset_offset[2]*this.current_asset], 1)
+        person_click := [ position[1]+this.config.asset_offset[1], position[2]+this.config.asset_offset[2]*this.current_asset]
+
+        ;MsgBox % "asset_offset: " . this.config.asset_offset[1] . "," . this.config.asset_offset[2]
+        ;MsgBox % "Person: " . person_click[1] . "," . person_click[2]
+        this.click(person_click, 1)
 
         if (A_Index == 1)
           topleft := [0, position[2]+asset_offset[2]]
@@ -197,7 +201,7 @@ class Configuration
 
   ;static default_coords := ["870,380",  "1335,435", "1064,253", "1285,998", "751,786", "986,443", "640,369", "357,363"]
 
-  static offset_names := ["task_offset", "person_offset", "job_offset"]
+  static offset_names := ["task_offset", "person_offset", "job_offset", "asset_offset"]
   ;static default_offsets :=[] "200,140", "0,45", "110, 40"]
 
   static other_names := ["preset"]
@@ -756,7 +760,7 @@ F9::
     ;BuildItems(todo_config[2])
 
   F4::
-    ;crafter.collect(2)
+    crafter.collect(2)
     crafter.config.presets[1].build(crafter)
     return
 
