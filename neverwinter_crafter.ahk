@@ -40,8 +40,6 @@ class Preset
     StringSplit, steps, name_val2, `;
     this.config := []
     Loop, %steps0%
-    {
-      MsgBox % steps%a_index%
       if (steps%a_index% != "")
       {
         this.config_length++
@@ -49,7 +47,6 @@ class Preset
         StringSplit, conf, steps%a_index%, `,
         this.config[a_index] := {where:conf1,search:conf2,number:conf3}
       }
-    }
   }
 
   toString()
@@ -81,60 +78,35 @@ class Configuration
   {
     this["filename"] := filename
     For index, value in Configuration.coord_names
-    {
-      this[value] := [0,0] ; Configuration.default_coords[index]
-    }
-
-    ;task_button := [0,0]
+      this[value] := [0,0]
     For index, value in Configuration.offset_names
-    {
-      this[value] := [0,0] ; Configuration.default_coords[index]
-    }
-
+      this[value] := [0,0]
     For index, value in Configuration.other_names
-    {
       if (value = "presets")
-      {
-        this[value] := "test" ; [["gather tough pelts", 3]]
-      }
-    }
+        this[value] := []
   }
 
   save()
   {
 
-    For key, value in this
-    {
+    For key, value in this ; Save Coordinates
       If RegExMatch(key, "button|field|offset")
-      {
-        str := value[1] . "," . value[2]
-        IniWrite, % str, % this.filename, MainConfig, % key
-      }
-      else If InStr(key, "preset")
-      {
-        For index, preset in this.presets ; For each preset entry
-        { ; Write it to the ini file with a prefix
-          IniWrite,% preset.toString(), % this.filename, Presets, % "preset" . a_index-1
-        }
-      }
-    }
+        IniWrite, % value[1] . "," . value[2], % this.filename, MainConfig, % key
+
+    For index, preset in this.presets ; Save presets
+      IniWrite,% preset.toString(), % this.filename, Presets, % "preset" . a_index-1
   }
 
-  debug()
+  showConfig()
   {
     str := ""
-    num_presets := 0
-    For key, value in this
+    For key, value in this ; Append the coordinates
       If RegExMatch(key, "button|field|offset")
-          str := str . key . "=" . value[1] . "," . value[2] . "`n"
-      else If InStr(key, "preset")
-        {
+        str := str . key . "=" . value[1] . "," . value[2] . "`n"
 
-          For index, val in this.presets ; For each preset entry
-          { ; Add a number as a suffix
-            str := str . "preset" . a_index-1 . "= " . val.toString() . "`n"
-          }
-        }
+    For index, val in this.presets ; Append each preset-Object
+      str := str . "preset" . a_index-1 . "= " . val.toString() . "`n"
+
     MsgBox % str
   }
 
@@ -178,9 +150,9 @@ class Configuration
 }
 
 test := new Configuration()
-test.debug()
+test.showConfig()
 test.load()
-test.debug()
+test.showConfig()
 test.save()
 ;For index, value in Configuration.coord_names
 ;{
