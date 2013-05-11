@@ -26,8 +26,17 @@ ConfigurationGuiEscape:
   ensureActiveWindow()
   return
 
+F7::
+  StartTime := A_TickCount
+  DllCall("QueryPerformanceCounter", "Int64 *", CounterBefore)
+  Sleep, 1000
+  ElapsedTime := A_TickCount - StartTime
+  DllCall("QueryPerformanceCounter", "Int64 *", CounterAfter)
+  MsgBox,  % ElapsedTime . "milliseconds have elapsed." . "`nElapsed QPC time is " . CounterAfter - CounterBefore
+  return
+
 #IfWinActive ahk_class CrypticWindowClassDX0
-  F12::
+  ^F12::
     crafter.config.show()
     return
 #IfWinActive
@@ -42,12 +51,15 @@ ensureActiveWindow()
         WinWaitActive  ahk_class CrypticWindowClassDX0
       }
       Sleep, 50
-      ImageSearch, posi, posj,0,0,1920,1200,*16 professions.png
+      ImageSearch, posi, posj,0,0,1920,1200,*24 professions.png
 
       If ErrorLevel
             Send N
       Sleep, 50
+      ImageSearch, posi, posj,0,0,1920,1200,*24 professions.png
+      return ErrorLevel
     }
+    return false
   }
 
 
@@ -59,13 +71,14 @@ class Crafter
   {
     if (target[1] != "")
     {
-      ensureActiveWindow()
+      If (!ensureActiveWindow())
+        return
       MouseMove, target[1], target[2], 20
-      Sleep, 150
+      Sleep, 100
       if (num == 1)
       {
         Click down
-        Sleep, 100
+        Sleep, 80
         Click up
       }
       return true
@@ -79,9 +92,9 @@ class Crafter
     this.click(where)
     this.click(this.config.getCoordinate("search"))
     Send ^a
-    Sleep, 200
+    Sleep, 100
     Send {raw}%text%
-    Sleep, 200
+    Sleep, 100
     Send {Enter}
   }
 
@@ -90,7 +103,10 @@ class Crafter
     Loop, %number%
     {
       this.click(category)
-      this.click(this.config.getCoordinate("continue"))
+      cont := this.config.getCoordinate("continue")
+      if ErrorLevel
+        break
+      this.click(cont)
       this.fillAssets(1)
       this.click(this.config.getCoordinate("start"))
     }
@@ -104,7 +120,6 @@ class Crafter
       Loop, %num%
       {
         this.click(this.config.getCoordinate("asset", topleft))
-        Sleep, 100
         this.click(this.config.getCoordinate("person"))
 
         if (A_Index == 1)
@@ -126,9 +141,13 @@ class Crafter
     {
       get_collect := this.config.getCoordinate("collect")
       If (get_collect[1] == "")
+      {
+        ;MsgBox Nothing more to collect?
         break
+      }
       this.click(get_collect)
       this.click(this.config.getCoordinate("ok"))
+      Sleep, 200
     }
   }
 
@@ -162,7 +181,8 @@ class Preset
 
   taskCategory(conf)
   {
-    ensureActiveWindow()
+    If (!ensureActiveWindow())
+        return
     if (InStr(conf.where,"lead"))
       pic := "leadership.png"
     else if (InStr(conf.where,"leath"))
@@ -223,8 +243,8 @@ class Configuration
 
   getCoordinate(what, topleft = "default")
   {
-    ensureActiveWindow()
-    Sleep, 100
+    If (!ensureActiveWindow())
+        return
     if (topleft == "defaults")
     {
       topleft = [0,0]
@@ -272,7 +292,7 @@ class Configuration
       str := str . "preset" . a_index-1 . "= " . val.toString() . "`n"
     global presetString := str
     Gui, Configuration:New,,Configuration
-    Gui, Add, Edit,r8 vpresetString, % presetString
+    Gui, Add, Edit,r8 w700 vpresetString, % presetString
     Gui, Add, Button,, OK
     Gui, Show
 
@@ -292,11 +312,8 @@ class Configuration
       {
         StringSplit, preset, presetArray%a_index%, =
         this.presets[a_index] := new Preset(preset2)
-        if (a_index < 12)
-        {
-          hotkey := "F" . a_index
-          Hotkey,% hotkey,PresetLabel
-        }
+        hotkey := "F" . a_index
+        Hotkey,% hotkey,PresetLabel
       }
     }
   }
@@ -304,17 +321,7 @@ class Configuration
   load(filename = "neverwinter_crafter.ini")
   {
     this["filename"] := filename
-    ; Grab all entries under the Presets Section
     IniRead, value,% filename, Presets
     this.loadFromString(value)
-
   }
-
-
-
-
 }
-
-
-
-
