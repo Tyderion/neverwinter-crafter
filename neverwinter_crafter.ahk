@@ -2,6 +2,36 @@ Menu, Tray, Icon, Neverwinter_114.ico
 presetString := ""
 
 
+crafter := new Crafter()
+crafter.config.load()
+crafter.config.save()
+return
+
+
+; Labels
+PresetLabel:
+  crafter.doPreset(SubStr(A_ThisHotkey,2))
+  return
+
+ConfigurationButtonOK:
+  Gui, Configuration:Default
+  Gui, Submit
+  crafter.config.loadFromString(presetString)
+  crafter.config.save()
+  ensureActiveWindow()
+  return
+
+ConfigurationGuiEscape:
+  Gui, Cancel
+  ensureActiveWindow()
+  return
+
+#IfWinActive ahk_class CrypticWindowClassDX0
+  F12::
+    crafter.config.show()
+    return
+#IfWinActive
+
 ensureActiveWindow()
   {
     If (WinExist("ahk_class CrypticWindowClassDX0"))
@@ -185,7 +215,7 @@ class Configuration
 {
   presets := []
 
-  __New(filename = "neverwinter_crafter_new2.ini")
+  __New(filename = "neverwinter_crafter.ini")
   {
     this["filename"] := filename
   }
@@ -271,7 +301,7 @@ class Configuration
     }
   }
 
-  load(filename = "neverwinter_crafter_new2.ini")
+  load(filename = "neverwinter_crafter.ini")
   {
     this["filename"] := filename
     ; Grab all entries under the Presets Section
@@ -285,34 +315,6 @@ class Configuration
 
 }
 
-crafter := new Crafter()
-crafter.config.load()
-crafter.config.save()
-return
 
 
 
-
-; Labels
-PresetLabel:
-  crafter.doPreset(SubStr(A_ThisHotkey,2))
-  return
-
-ConfigurationButtonOK:
-  Gui, Configuration:Default
-  Gui, Submit
-  crafter.config.loadFromString(presetString)
-  crafter.config.save()
-  ensureActiveWindow()
-  return
-
-ConfigurationGuiEscape:
-  Gui, Cancel
-  ensureActiveWindow()
-  return
-
-#IfWinActive ahk_class CrypticWindowClassDX0
-  F12::
-    crafter.config.show()
-    return
-#IfWinActive
