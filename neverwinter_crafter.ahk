@@ -60,7 +60,6 @@ class Crafter
 
   build(number, start_with_task = 1)
   {
-    ;MsgBox % "Building " . number
     this.click(this.config.overview_button)
     Loop, %number%
     {
@@ -75,7 +74,7 @@ class Crafter
       this.fillAssets(1)
       Sleep, 200
       this.click(this.config.start_button)
-      loopvar++
+      start_with_task++
       Sleep, 200
     }
   }
@@ -156,10 +155,26 @@ class Preset
     configuration := crafter.config
     For index, conf in this.config
     {
-      crafter.search(conf.search, crafter.config.leathermaking_button)
+      crafter.search(conf.search, this.taskCategory(conf))
       crafter.build(conf.number, index)
     }
 
+  }
+
+  taskCategory(conf)
+  {
+    if (InStr(conf.where,"lead"))
+      ImageSearch, posi, posj,0,0,1920,1200,*16 leadership.png
+    else if (InStr(conf.where,"leath"))
+      ImageSearch, posi, posj,0,0,1920,1200,*16 leathermaking.png
+    else if (InStr(conf.where,"mail"))
+      ImageSearch, posi, posj,0,0,1920,1200,*16 mailsmithing.png
+    else if (InStr(conf.where,"plate"))
+      ImageSearch, posi, posj,0,0,1920,1200,*16 platesmithing.png
+    else if (InStr(conf.where,"tail"))
+      ImageSearch, posi, posj,0,0,1920,1200,*16 tailoring.png
+
+    return [posi+15, posj+5]
   }
 
   __New(fromString)
