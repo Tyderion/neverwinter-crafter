@@ -174,6 +174,7 @@ class Preset
     else if (InStr(conf.where,"tail"))
       ImageSearch, posi, posj,0,0,1920,1200,*16 tailoring.png
 
+    MsgBox % "Coords: " . posi . "," . posj
     return [posi+15, posj+5]
   }
 
@@ -234,6 +235,47 @@ class Configuration
         this[value] := []
 
 
+  }
+
+  continueButton()
+  {
+     ImageSearch, posi, posj,0,0,1920,1200,*16 continue_button.png
+     return [posi+15,posj+5]
+  }
+  okButton()
+  {
+     ImageSearch, posi, posj,0,0,1920,1200,*16 ok_button.png
+     If ErrorLevel
+      MsgBox Not Found
+     return [posi+15,posj+5]
+  }
+  collectButton()
+  {
+     ImageSearch, posi, posj,0,0,1920,1200,*16 *TransBlack collect_button.png
+     If ErrorLevel
+      MsgBox collect button Not Found
+     return [posi+15,posj+5]
+  }
+
+  personButton()
+  {
+     ImageSearch, posi, posj,0,0,1920,1200,*16 person_button.png
+     return [posi+15,posj+5]
+  }
+  assetButton()
+  {
+     ImageSearch, posi, posj,0,0,1920,1200,*16 asset_button.png
+     return [posi+15,posj+5]
+  }
+  startButton()
+  {
+     ImageSearch, posi, posj,0,0,1920,1200,*16 start_button.png
+     return [posi+15,posj+5]
+  }
+  searchField()
+  {
+     ImageSearch, posi, posj,0,0,1920,1200,*16 search_field.png
+     return [posi+15,posj+5]
   }
 
   save()
@@ -778,11 +820,16 @@ F12::
     crafter.collect(2)
     crafter.config.presets[1].build(crafter)
     return
-  F4::
-    crafter.config.current_asset := 1
-    crafter.collect(2)
-    crafter.config.presets[2].build(crafter)
-    return
+;  F4::
+;    crafter.config.current_asset := 1
+;    crafter.collect(2)
+;    crafter.config.presets[3].build(crafter)
+;    return
+
+  F5::
+    crafter.click(crafter.config.collectButton())
+    Sleep, 200
+    crafter.click(crafter.config.okButton())
 
 ;  F6::
 ;    ;AskItem()
