@@ -56,8 +56,8 @@ ensureActiveWindow()
       If ErrorLevel
             Send N
       Sleep, 50
-      ImageSearch, posi, posj,0,0,1920,1200,*24 professions.png
-      return ErrorLevel
+      ;ImageSearch, posi, posj,0,0,1920,1200,*24 professions.png
+      return true
     }
     return false
   }
@@ -72,7 +72,7 @@ class Crafter
     if (target[1] != "")
     {
       If (!ensureActiveWindow())
-        return
+        return false
       MouseMove, target[1], target[2], 20
       Sleep, 100
       if (num == 1)
@@ -89,8 +89,11 @@ class Crafter
 
   search(text, where)
   {
-    this.click(where)
-    this.click(this.config.getCoordinate("search"))
+    if (!this.click(where))
+      return false
+
+    if (!this.click(this.config.getCoordinate("search")))
+      return false
     Send ^a
     Sleep, 100
     Send {raw}%text%
