@@ -154,10 +154,6 @@ test.showConfig()
 test.load()
 test.showConfig()
 test.save()
-;For index, value in Configuration.coord_names
-;{
-  ;MsgBox % "outside: " . value . "=" . test[value][1] . "," . test[value][2]
-;}
 
 
 
@@ -360,7 +356,7 @@ TestConfig()
     }
   }
   SaveConfig()
-  ;return true
+  return true
 }
 
 LoadConfig()
@@ -450,7 +446,7 @@ Search()
   ClickSmooth(leather)
   Sleep, 200
   ClickSmooth(search)
-  MsgBox, % "Clicked on search"
+  ;MsgBox, % "Clicked on search"
   Sleep, 200
   Send ^a
   Sleep, 200
@@ -458,13 +454,14 @@ Search()
   Send {raw}%val%
   Sleep, 200
   Send {Enter}
+  MsgBox Searched
 }
 
 BuildItems(number)
 {
   global
   ClickSmooth(overview)
-  MsgBox Wait
+  ;ClickSmooth(task)
   Loop, %number%
   {
       local index := [Floor(Mod(A_Index-1,3)),Floor((A_Index-1)/3)]
