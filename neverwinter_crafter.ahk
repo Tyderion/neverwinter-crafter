@@ -25,80 +25,76 @@ length := 13
 special_names := ["task_offset", "asset_offset", "person_offset", "todo_config"]
 special_length := 4
 
+ensureActiveWindow()
+  {
+    If (WinExist("ahk_class CrypticWindowClassDX0"))
+    {
+      If (WinActive("ahk_class CrypticWindowClassDX0") == 0x0)
+      {
+        WinActivate ahk_class CrypticWindowClassDX0
+        WinWaitActive  ahk_class CrypticWindowClassDX0
+      }
+      Sleep, 50
+      ImageSearch, posi, posj,0,0,1920,1200,*16 professions.png
+      If ErrorLevel
+        {
+          Sleep, 50
+          ImageSearch, posi, posj,0,0,1920,1200,*16 professions2.png
+          If ErrorLevel
+            ImageSearch, posi, posj,0,0,1920,1200,*16 professions3.png
+        }
+
+      If ErrorLevel
+            Send N
+      Sleep, 50
+    }
+  }
+
+
+presetString := ""
 
 class Crafter
 {
   config := new Configuration()
   current_asset := 1
-
   click(target, num = 1)
   {
-    this.ensureActiveWindow()
-    ;MsgBox % "Moving mouse to: " . target[1] . "," . target[2]
-    MouseMove, target[1], target[2], 20
-    if (num == 1)
+    if (target[1] != "")
     {
-      Click down
-      Sleep, 100
-      Click up
+      ensureActiveWindow()
+      MouseMove, target[1], target[2], 20
+      Sleep, 150
+      if (num == 1)
+      {
+        Click down
+        Sleep, 100
+        Click up
+      }
+      return true
     }
-    return true
+    else
+      return false
   }
 
   search(text, where)
   {
-  this.click(where)
-  Sleep, 200
-  this.click(this.config.search_field)
-  Sleep, 200
-  Send ^a
-  Sleep, 200
-  Send {raw}%text%
-  Sleep, 200
-  Send {Enter}
+    this.click(where)
+    this.click(this.config.getCoordinate("search"))
+    Send ^a
+    Sleep, 200
+    Send {raw}%text%
+    Sleep, 200
+    Send {Enter}
   }
 
-  build(number, start_with_task = 1)
+  build(number, category)
   {
-    this.click(this.config.overview_button)
     Loop, %number%
     {
-      index := [Floor(Mod(start_with_task-1,3)),Floor((start_with_task-1)/3)]
-      coord = [0,0]
-      coord := [this.config.task_button[1]+index[1]*this.config.task_offset[1],this.config.task_button[2]+index[2]*this.config.task_offset[2]]
-
-      this.click(coord)
-      Sleep, 200
-      this.click(this.config.continue_button)
-      Sleep, 200
+      this.click(category)
+      this.click(this.config.getCoordinate("continue"))
       this.fillAssets(1)
-      Sleep, 200
-      this.click(this.config.start_button)
-      start_with_task++
-      Sleep, 200
-    }
-  }
-
-  searchAsset(topleft)
-  {
-    ImageSearch, posi, posj,topleft[1],topleft[2],1920,1200,*16 asset_button.png
-    array := [posi+15, posj+5]
-    return array
-  }
-
-  ensureActiveWindow()
-  {
-    If (WinExist("ahk_class CrypticWindowClassDX0"))
-    {
-      If (!WinActive("ahk_class CrypticWindowClassDX0"))
-      {
-        WinActivate ahk_class CrypticWindowClassDX0
-        WinWaitActive  ahk_class CrypticWindowClassDX0
-      }
-
-      ;ImageSearch, posi, posj,0,0,1920,1200,*16 overview_icon.png
-      ;If ErrorLevel
-        ;Send N
+      this.click(this.config.getCoordinate("start"))
     }
   }
 
@@ -109,14 +105,9 @@ class Crafter
       topleft := [0,0]
       Loop, %num%
       {
-        this.ensureActiveWindow()
-        position := this.searchAsset(topleft)
-        this.click(position,1)
-        person_click := [ position[1]+this.config.asset_offset[1], position[2]+this.config.asset_offset[2]*this.current_asset]
-
-        ;MsgBox % "asset_offset: " . this.config.asset_offset[1] . "," . this.config.asset_offset[2]
-        ;MsgBox % "Person: " . person_click[1] . "," . person_click[2]
-        this.click(person_click, 1)
+        this.click(this.config.getCoordinate("asset", topleft))
+        Sleep, 100
+        this.click(this.config.getCoordinate("person"))
 
         if (A_Index == 1)
           topleft := [0, position[2]+asset_offset[2]]
@@ -128,16 +119,18 @@ class Crafter
     }
   }
 
-  collect(num)
+
+  collect()
   {
-    this.ensureActiveWindow()
-    Loop, %num%
+    this.click(this.config.getCoordinate("overview"))
+
+    Loop
     {
-      this.click(this.config.overview_button)
-      index := [Floor(Mod(A_Index-1,3)),Floor((A_Index-1)/3)]
-      coord := [this.config.task_button[1]+index[1]*this.config.task_offset[1],this.config.task_button[2]+index[2]*this.config.task_offset[2]]
-      this.click(coord)
-      this.click(this.config.OK_button)
+      get_collect := this.config.getCoordinate("collect")
+      If (get_collect[1] == "")
+        break
+      this.click(get_collect)
+      this.click(this.config.getCoordinate("ok"))
     }
   }
 
@@ -156,25 +149,28 @@ class Preset
     For index, conf in this.config
     {
       crafter.search(conf.search, this.taskCategory(conf))
-      crafter.build(conf.number, index)
+      crafter.build(conf.number, this.taskCategory(conf))
     }
 
   }
 
   taskCategory(conf)
   {
+    ensureActiveWindow()
     if (InStr(conf.where,"lead"))
-      ImageSearch, posi, posj,0,0,1920,1200,*16 leadership.png
+      pic := "leadership.png"
     else if (InStr(conf.where,"leath"))
-      ImageSearch, posi, posj,0,0,1920,1200,*16 leathermaking.png
+      pic := "leathermaking.png"
     else if (InStr(conf.where,"mail"))
-      ImageSearch, posi, posj,0,0,1920,1200,*16 mailsmithing.png
+      pic := "mailsmithing.png"
     else if (InStr(conf.where,"plate"))
-      ImageSearch, posi, posj,0,0,1920,1200,*16 platesmithing.png
+      pic := "platesmithing.png"
     else if (InStr(conf.where,"tail"))
-      ImageSearch, posi, posj,0,0,1920,1200,*16 tailoring.png
+      pic := "tailoring.png"
 
-    MsgBox % "Coords: " . posi . "," . posj
+    ImageSearch, posi, posj,0,0,1920,1200,*16 %pic%
+    If ErrorLevel
+      MsgBox % conf.where . " not found"
     return [posi+15, posj+5]
   }
 
@@ -223,67 +219,68 @@ class Configuration
 
   static run_once := false
 
-  __New(filename = "neverwinter_crafter_new.ini")
+
+  presets := []
+
+  __New(filename = "neverwinter_crafter_new2.ini")
   {
     this["filename"] := filename
-    For index, value in Configuration.coord_names
-      this[value] := [0,0]
-    For index, value in Configuration.offset_names
-      this[value] := [0,0]
-    For index, value in Configuration.other_names
-      if (value = "presets")
-        this[value] := []
+    ;For index, value in Configuration.coord_names
+      ;this[value] := [0,0]
+    ;For index, value in Configuration.offset_names
+      ;this[value] := [0,0]
+    ;For index, value in Configuration.other_names
+      ;if (value = "presets")
+;        this[value] := []
 
 
   }
 
-  continueButton()
-  {
-     ImageSearch, posi, posj,0,0,1920,1200,*16 continue_button.png
-     return [posi+15,posj+5]
-  }
-  okButton()
-  {
-     ImageSearch, posi, posj,0,0,1920,1200,*16 ok_button.png
-     If ErrorLevel
-      MsgBox Not Found
-     return [posi+15,posj+5]
-  }
-  collectButton()
-  {
-     ImageSearch, posi, posj,0,0,1920,1200,*16 *TransBlack collect_button.png
-     If ErrorLevel
-      MsgBox collect button Not Found
-     return [posi+15,posj+5]
-  }
 
-  personButton()
+  getCoordinate(what, topleft = "default")
   {
-     ImageSearch, posi, posj,0,0,1920,1200,*16 person_button.png
-     return [posi+15,posj+5]
-  }
-  assetButton()
-  {
-     ImageSearch, posi, posj,0,0,1920,1200,*16 asset_button.png
-     return [posi+15,posj+5]
-  }
-  startButton()
-  {
-     ImageSearch, posi, posj,0,0,1920,1200,*16 start_button.png
-     return [posi+15,posj+5]
-  }
-  searchField()
-  {
-     ImageSearch, posi, posj,0,0,1920,1200,*16 search_field.png
-     return [posi+15,posj+5]
+    ensureActiveWindow()
+    Sleep, 100
+    if (topleft == "defaults")
+    {
+      topleft = [0,0]
+    }
+    if (what == "continue")
+      pic := "continue_button.png"
+    else if (what == "ok")
+      pic := "ok_button.png"
+    else if (what == "collect")
+      pic := "collect_button.png"
+    else if (what == "person")
+      pic := "person_button.png"
+    else if (what == "overview")
+      pic := "overview_icon.png"
+    else if (what == "asset")
+      pic := "asset_button.png"
+    else if (what == "start")
+      pic := "start_button_off.png"
+    else if (what == "search")
+      pic := "search_field.png"
+    else
+      return ""
+
+    ImageSearch, posi, posj,topleft[1], topleft[2],1920,1200,*16 %pic%
+    If ErrorLevel
+      {
+        if (what == "start")
+          ImageSearch, posi, posj,topleft[1], topleft[2],1920,1200,*16 start_button_on.png
+        if ErrorLevel
+          return ""
+      }
+    return [posi+15,posj+5]
   }
 
   save()
   {
 
-    For key, value in this ; Save Coordinates
-      If RegExMatch(key, "button|field|offset")
-        IniWrite, % value[1] . "," . value[2], % this.filename, MainConfig, % key
+;    For key, value in this ; Save Coordinates
+;      If RegExMatch(key, "button|field|offset")
+;        IniWrite, % value[1] . "," . value[2], % this.filename, MainConfig, % key
 
     For index, preset in this.presets ; Save presets
       IniWrite,% preset.toString(), % this.filename, Presets, % "preset" . a_index-1
@@ -291,49 +288,40 @@ class Configuration
 
   show()
   {
-    Gui, Configuration:New,,Configuration
-    For key, value in this ; Append the coordinates
-      If RegExMatch(key, "button|field|offset")
-        Gui, Add, Edit,r1 ReadOnly, % key . "=" . value[1] . "," . value[2] . "`n"
+    str :=  ""
     For index, val in this.presets ; Append each preset-Object
-     Gui, Add, Edit,r3 ReadOnly, % "preset" . a_index-1 . "= " . val.toString() . "`n"
+      str := str . "preset" . a_index-1 . "= " . val.toString() . "`n"
+    global presetString := str
+    Gui, Configuration:New,,Configuration
+    Gui, Add, Edit,r8 vpresetString, % presetString
+    Gui, Add, Button,, OK
     Gui, Show
+
   }
 
-  load(filename = "neverwinter_crafter_new.ini")
+  loadFromString(string)
   {
-    this["filename"] := filename
-    For index, key in Configuration.coord_names
-    {
-      IniRead, value, % filename, MainConfig, % key
-      StringSplit, test, value , `, ,
-      this[key] := [test1, test2]
-    }
+    this.presets := []
+    ; Split the entries at new lines
+    StringSplit, presetArray, string, `n
+    ; For each entry
 
-    For index, key in Configuration.offset_names
+    Loop, %presetArray0%
     {
-      IniRead, value,% filename, MainConfig,% key
-      StringSplit, test, value , `, ,
-      this[key] := [test1, test2]
-    }
-
-    For index, key in Configuration.other_names
-    {
-      if InStr(key, "preset")
+      If (presetArray%a_index% != "")
       {
-        ; Grab all entries under the Presets Section
-        IniRead, value,% filename, Presets
-        ; Split the entries at new lines
-        StringSplit, presetArray, value, `n
-        this["presets"] := []
-        ; For each entry
-        Loop, %presetArray0%
-        {
-            StringSplit, preset, presetArray%a_index%, =
-            this.presets[a_index] := new Preset(preset2)
-        }
+        StringSplit, preset, presetArray%a_index%, =
+        this.presets[a_index] := new Preset(preset2)
       }
     }
+  }
+
+  load(filename = "neverwinter_crafter_new2.ini")
+  {
+    this["filename"] := filename
+    ; Grab all entries under the Presets Section
+    IniRead, value,% filename, Presets
+    this.loadFromString(value)
 
   }
 
@@ -342,42 +330,42 @@ class Configuration
 crafter := new Crafter()
 crafter.config.load()
 crafter.config.save()
-
-
-
-configuring := [["task", "absolute"], ["task_offset", "relative"]]
-current_configuring := 0
-offset_config := "horizontal"
-
-Hotkey, F12,, Off
-
-ResetChoice := ""
-
-str := ""
-Loop, %length%
-{
-  name := names[A_Index]
-  If (name != "person_offset" && name != "asset_offset" && name != "task_offset" && name != "todo_config")
-  {
-    str := str . names[A_Index]
-    if (A_Index < length)
-    {
-      str := str . "|"
-    }
-  }
-}
-
-Gui, Reset:New,,Reset A Coordiante
-Gui, Add, Text,, Plese select the coordinates you want to reset.
-Gui, Add, DropDownList, vResetChoice Sort Choose1, %str%
-Gui, Add, Button, Default, OK
-str = ""
-
-
-
-LoadConfig()
-SaveConfig()
 return
+
+
+;configuring := [["task", "absolute"], ["task_offset", "relative"]]
+;current_configuring := 0
+;offset_config := "horizontal"
+;
+;Hotkey, F12,, Off
+;
+;ResetChoice := ""
+;
+;str := ""
+;Loop, %length%
+;{
+;  name := names[A_Index]
+;  If (name != "person_offset" && name != "asset_offset" && name != "task_offset" && name != "todo_config")
+;  {
+;    str := str . names[A_Index]
+;    if (A_Index < length)
+;    {
+;      str := str . "|"
+;    }
+;  }
+;}
+;
+;Gui, Reset:New,,Reset A Coordiante
+;Gui, Add, Text,, Plese select the coordinates you want to reset.
+;Gui, Add, DropDownList, vResetChoice Sort Choose1, %str%
+;Gui, Add, Button, Default, OK
+;str = ""
+;
+;
+;
+;;LoadConfig()
+;;SaveConfig()
+;return
 
 ; Labels and stuff
 ResetButtonOK:
@@ -387,25 +375,34 @@ ResetButtonOK:
   TestConfig()
   return
 
+ConfigurationButtonOK:
+  Gui, Configuration:Default
+  Gui, Submit
+  crafter.config.loadFromString(presetString)
+  crafter.config.save()
+  ensureActiveWindow()
+  return
+
 ResetGuiEscape:
 ConfigurationGuiEscape:
   Gui, Cancel
+  ensureActiveWindow()
   return
 
-EnsureActiveWindow()
-{
-  If (WinExist("ahk_class CrypticWindowClassDX0"))
-  {
-    If (!WinActive("ahk_class CrypticWindowClassDX0"))
-    {
-      WinActivate ahk_class CrypticWindowClassDX0
-      WinWaitActive  ahk_class CrypticWindowClassDX0
-      ImageSearch, posi, posj,0,0,1920,1200,*16 overview_icon.png
-      If ErrorLevel
-        Send N
-    }
-  }
-}
+;EnsureActiveWindow()
+;{
+;  If (WinExist("ahk_class CrypticWindowClassDX0"))
+;  {
+;    If (!WinActive("ahk_class CrypticWindowClassDX0"))
+;    {
+;      WinActivate ahk_class CrypticWindowClassDX0
+;      WinWaitActive  ahk_class CrypticWindowClassDX0
+;      ImageSearch, posi, posj,0,0,1920,1200,*16 overview_icon.png
+;      If ErrorLevel
+;        Send N
+;    }
+;  }
+;}
 
 Configure2()
 {
@@ -775,11 +772,11 @@ FillAssets(num)
 }
 
 
-
-F12::
-  Hotkey, F12,, Off
-  Configure2()
-  return
+;
+;F12::
+;  Hotkey, F12,, Off
+;  Configure2()
+;  return
 ;F9::
 ;  Gui, Reset:Default
 ;  Gui, Show,,Reset Coordinate
@@ -788,7 +785,9 @@ F12::
 ;F7::
 ;  WinActivate ahk_class CrypticWindowClassDX0
 ;  return
-
+  F6::
+    ensureActiveWindow()
+    return
 #IfWinActive ahk_class CrypticWindowClassDX0
 ;  F8::
 ;    SaveConfig()
@@ -826,11 +825,18 @@ F12::
 ;    crafter.config.presets[3].build(crafter)
 ;    return
 
-  F5::
-    crafter.click(crafter.config.collectButton())
-    Sleep, 200
-    crafter.click(crafter.config.okButton())
+  F7::
+    crafter.fillAssets(1)
+    return
 
+  F5::
+    ;crafter.click(crafter.config.getCoordinate("task"))
+    crafter.collect()
+    return
+    ;crafter.ensureActiveWindow()
+    ;Sleep, 200
+    ;crafter.click(crafter.config.okButton())
+;
 ;  F6::
 ;    ;AskItem()
 ;    todo_config[1] := "gather tough pelts"
