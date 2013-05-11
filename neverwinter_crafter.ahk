@@ -26,12 +26,138 @@ special_names := ["task_offset", "asset_offset", "person_offset", "todo_config"]
 special_length := 4
 
 
+class Crafter
+{
+  config := new Configuration()
+  current_asset := 1
+
+  click(target, num = 1)
+  {
+    this.ensureActiveWindow()
+    ;MsgBox % "Moving mouse to: " . target[1] . "," . target[2]
+    MouseMove, target[1], target[2], 20
+    if (num == 1)
+    {
+      Click down
+      Sleep, 100
+      Click up
+    }
+    return true
+  }
+
+  search(text, where)
+  {
+  this.click(where)
+  Sleep, 200
+  this.click(this.config.search_field)
+  Sleep, 200
+  Send ^a
+  Sleep, 200
+  Send {raw}%text%
+  Sleep, 200
+  Send {Enter}
+  }
+
+  build(number)
+  {
+    ;MsgBox % "Building " . number
+    this.current_asset := 1
+    this.click(this.config.overview_button)
+    Loop, %number%
+    {
+      index := [Floor(Mod(A_Index-1,3)),Floor((A_Index-1)/3)]
+      coord = [0,0]
+      coord := [this.config.task_button[1]+index[1]*this.config.task_offset[1],this.config.task_button[2]+index[2]*this.config.task_offset[2]]
+
+      this.click(coord)
+      Sleep, 200
+      this.click(this.config.continue_button)
+      Sleep, 200
+      this.fillAssets(1)
+      Sleep, 200
+      this.click(this.config.start_button)
+      loopvar++
+      Sleep, 200
+    }
+  }
+
+  searchAsset(topleft)
+  {
+    ImageSearch, posi, posj,topleft[1],topleft[2],1920,1200,*16 asset_button.png
+    array := [posi+15, posj+5]
+    return array
+  }
+
+  ensureActiveWindow()
+  {
+    If (WinExist("ahk_class CrypticWindowClassDX0"))
+    {
+      If (!WinActive("ahk_class CrypticWindowClassDX0"))
+      {
+        WinActivate ahk_class CrypticWindowClassDX0
+        WinWaitActive  ahk_class CrypticWindowClassDX0
+      }
+
+      ;ImageSearch, posi, posj,0,0,1920,1200,*16 overview_icon.png
+      ;If ErrorLevel
+        ;Send N
+    }
+  }
+
+  fillAssets(num)
+  {
+    if (num >= 1)
+    {
+      topleft := [0,0]
+      Loop, %num%
+      {
+        this.ensureActiveWindow()
+        position := this.searchAsset(topleft)
+        this.click(position,1)
+        this.click([ position[1]+asset_offset[1], position[2]+asset_offset[2]*this.current_asset], 1)
+
+        if (A_Index == 1)
+          topleft := [0, position[2]+asset_offset[2]]
+        else
+          topleft := [position[1], topleft[2]]
+        this.current_asset := this.current_asset +1
+
+      }
+    }
+  }
+
+  collect(num)
+  {
+    this.ensureActiveWindow()
+    Loop, %num%
+    {
+      this.click(this.config.overview_button)
+      index := [Floor(Mod(A_Index-1,3)),Floor((A_Index-1)/3)]
+      coord := [this.config.task_button[1]+index[1]*this.config.task_offset[1],this.config.task_button[2]+index[2]*this.config.task_offset[2]]
+      this.click(coord)
+      this.click(this.config.OK_button)
+    }
+  }
+
+}
 
 class Preset
 {
   name := "A Preset"
   config := []
   config_length := 0
+
+
+  build(crafter)
+  {
+    configuration := crafter.config
+    For index, conf in this.config
+    {
+      crafter.search(conf.search, crafter.config.leathermaking_button)
+      crafter.build(conf.number)
+    }
+
+  }
 
   __New(fromString)
   {
@@ -62,6 +188,8 @@ class Preset
   }
 }
 
+
+
 class Configuration
 {
 
@@ -74,6 +202,8 @@ class Configuration
 
   static other_names := ["preset"]
 
+  static run_once := false
+
   __New(filename = "neverwinter_crafter_new.ini")
   {
     this["filename"] := filename
@@ -84,6 +214,8 @@ class Configuration
     For index, value in Configuration.other_names
       if (value = "presets")
         this[value] := []
+
+
   }
 
   save()
@@ -97,17 +229,15 @@ class Configuration
       IniWrite,% preset.toString(), % this.filename, Presets, % "preset" . a_index-1
   }
 
-  showConfig()
+  show()
   {
-    str := ""
+    Gui, Configuration:New,,Configuration
     For key, value in this ; Append the coordinates
       If RegExMatch(key, "button|field|offset")
-        str := str . key . "=" . value[1] . "," . value[2] . "`n"
-
+        Gui, Add, Edit,r1 ReadOnly, % key . "=" . value[1] . "," . value[2] . "`n"
     For index, val in this.presets ; Append each preset-Object
-      str := str . "preset" . a_index-1 . "= " . val.toString() . "`n"
-
-    MsgBox % str
+     Gui, Add, Edit,r3 ReadOnly, % "preset" . a_index-1 . "= " . val.toString() . "`n"
+    Gui, Show
   }
 
   load(filename = "neverwinter_crafter_new.ini")
@@ -149,11 +279,9 @@ class Configuration
 
 }
 
-test := new Configuration()
-test.showConfig()
-test.load()
-test.showConfig()
-test.save()
+crafter := new Crafter()
+crafter.config.load()
+crafter.config.save()
 
 
 
@@ -179,6 +307,7 @@ Loop, %length%
   }
 }
 
+Gui, Reset:New,,Reset A Coordiante
 Gui, Add, Text,, Plese select the coordinates you want to reset.
 Gui, Add, DropDownList, vResetChoice Sort Choose1, %str%
 Gui, Add, Button, Default, OK
@@ -191,14 +320,15 @@ SaveConfig()
 return
 
 ; Labels and stuff
-ButtonOK:
+ResetButtonOK:
+  Gui, Reset:Default
   Gui, Submit
-  MsgBox %ResetChoice%
   %ResetChoice% := [0,0]
   TestConfig()
-  return ; End TEH Label
+  return
 
-GuiEscape:
+ResetGuiEscape:
+ConfigurationGuiEscape:
   Gui, Cancel
   return
 
@@ -210,6 +340,9 @@ EnsureActiveWindow()
     {
       WinActivate ahk_class CrypticWindowClassDX0
       WinWaitActive  ahk_class CrypticWindowClassDX0
+      ImageSearch, posi, posj,0,0,1920,1200,*16 overview_icon.png
+      If ErrorLevel
+        Send N
     }
   }
 }
@@ -454,12 +587,13 @@ Search()
   Send {raw}%val%
   Sleep, 200
   Send {Enter}
-  MsgBox Searched
+  ;MsgBox Searched
 }
 
 BuildItems(number)
 {
   global
+  which_asset := 1
   ClickSmooth(overview)
   ;ClickSmooth(task)
   Loop, %number%
@@ -473,7 +607,7 @@ BuildItems(number)
       pcoord[2] := person[2]+(A_Index-1)*person_offset[2]
 
       ;MsgBox, % "Task: " . task[1] . "," . task[2] . " - Coord: " . coord[1] . "," . coord[2]
-      MsgBox, % "PersonCoord: " . pcoord[1] . "," . pcoord[2] . " - Person: " . person[1] . "," . person[2]
+      ;MsgBox, % "PersonCoord: " . pcoord[1] . "," . pcoord[2] . " - Person: " . person[1] . "," . person[2]
       ClickSmooth(coord)
       Sleep, 200
       ClickSmooth(todo)
@@ -491,7 +625,7 @@ BuildItems(number)
 
 AskFinished()
 {
-  global overview,task, task_offset, OK_button, number
+  global number
   MsgBox,4, % "Finished?", % "Do crafting goods need collecting?"
   IfMsgBox Yes
   {
@@ -500,6 +634,14 @@ AskFinished()
       return false
     else
     {
+      Collect()
+    }
+  }
+}
+
+Collect()
+{
+  global overview, task, task_offset, OK_button, number
       EnsureActiveWindow()
       ClickSmooth(overview)
       loopvar := 0
@@ -514,8 +656,7 @@ AskFinished()
           ;
           loopvar++
       }
-    }
-  }
+
 }
 
 TestOutputVar(ByRef output,input = 1)
@@ -542,37 +683,35 @@ SearchAsset(topleft)
   array := [posi+15, posj+5]
   return array
 }
+
+which_asset := 1
+number := 2
+
 FillAssets(num)
 {
-  global asset_offset
-  ;MsgBox, % asset_offset
-  if (num < 1)
-    {
-      return
-  }
-  topleft := [0,0]
-
-  Loop, %num%
+  global asset_offset, global which_asset
+  if (num >= 1)
   {
-    EnsureActiveWindow()
-    position := SearchAsset(topleft)
-    ;MsgBox, % "position = " . position[1] . "," . position[2] . "Offset = " . asset_offset[1] . "," . asset_offset[2]
+    topleft := [0,0]
+    Loop, %num%
+    {
+      EnsureActiveWindow()
+      position := SearchAsset(topleft)
+      ;MsgBox, % "position = " . position[1] . "," . position[2] . "Offset = " . asset_offset[1] . "," . asset_offset[2]
+      ;MsgBox % "Which Asset: " . which_asset
+      ClickSmooth(position,1)
+      ClickSmooth([ position[1]+asset_offset[1], position[2]+asset_offset[2]*which_asset], 1)
 
-    ClickSmooth(position,1)
-    ClickSmooth([ position[1]+asset_offset[1], position[2]+asset_offset[2]], 1)
+      if (A_Index == 1)
+        topleft := [0, position[2]+asset_offset[2]]
+      else
+        topleft := [position[1], topleft[2]]
+      which_asset := which_asset +1
+      ;ClickSmooth(topleft,1)
+      ;MsgBox, "At Topleft"
 
-    if (A_Index == 1)
-      topleft := [0, position[2]+asset_offset[2]]
-    else
-      topleft := [position[1], topleft[2]]
-
-    ClickSmooth(topleft,1)
-    MsgBox, "At Topleft"
-
+    }
   }
-
-
-
 }
 
 
@@ -582,10 +721,10 @@ F12::
   Configure2()
   return
 F10::
-  ;SearchAsset([0,0])
-  FillAssets(4)
+  crafter.config.show()
   return
 F9::
+  Gui, Reset:Default
   Gui, Show,,Reset Coordinate
   return
 ;
@@ -616,24 +755,34 @@ F9::
   ;F4::
     ;BuildItems(todo_config[2])
 
-;  F6::
-;    AskItem()
-;    Search()
-;    return
+  F4::
+    ;crafter.collect(2)
+    crafter.config.presets[1].build(crafter)
+    return
+
+  F6::
+    ;AskItem()
+    todo_config[1] := "gather tough pelts"
+    todo_config[2] := 2
+    number := 2
+    EnsureActiveWindow()
+    Collect()
+    Search()
+    BuildItems(todo_config[2])
+    Send N
+    return
   F5::
     If (TestConfig()) {
       AskFinished()
       EnsureActiveWindow()
-      ;MsgBox, % WinActive("ahk_class CrypticWindowClassDX0")
       If (AskItem())
       {
 
         Search()
-        MsgBox % todo_config[2]
+        ;MsgBox % todo_config[2]
         BuildItems(todo_config[2])
 
       }
     }
 
 #IfWinActive
-RControl & Enter::ShiftAltTab
