@@ -20,7 +20,7 @@ PresetLabel:
   {
     if (e.What != "WindowNotFound")
       Send {Backspace}
-    MsgBox % "Error in " e.What ", which was called at line " e.Line
+    ;MsgBox % "Error in " e.What ", which was called at line " e.Line
   }
 
   return
