@@ -1,6 +1,6 @@
 Menu, Tray, Icon, Neverwinter_114.ico
 presetString := ""
-
+interfaceVisible := false
 
 crafter := new Crafter()
 crafter.config.load()
@@ -10,7 +10,19 @@ return
 
 ; Labels
 PresetLabel:
-  crafter.doPreset(SubStr(A_ThisHotkey,2))
+  try
+  {
+    crafter.doPreset(SubStr(A_ThisHotkey,2))
+    Send N
+    interfaceVisible := false
+  }
+  catch e
+  {
+    if (e.What != "WindowNotFound")
+      Send {Backspace}
+    MsgBox % "Error in " e.What ", which was called at line " e.Line
+  }
+
   return
 
 ConfigurationButtonOK:
@@ -26,22 +38,16 @@ ConfigurationGuiEscape:
   ensureActiveWindow()
   return
 
-F7::
-  StartTime := A_TickCount
-  DllCall("QueryPerformanceCounter", "Int64 *", CounterBefore)
-  Sleep, 1000
-  ElapsedTime := A_TickCount - StartTime
-  DllCall("QueryPerformanceCounter", "Int64 *", CounterAfter)
-  MsgBox,  % ElapsedTime . "milliseconds have elapsed." . "`nElapsed QPC time is " . CounterAfter - CounterBefore
-  return
+
 
 #IfWinActive ahk_class CrypticWindowClassDX0
   ^F12::
     crafter.config.show()
     return
+
 #IfWinActive
 
-ensureActiveWindow()
+ensureActiveWindow(visible=false)
   {
     If (WinExist("ahk_class CrypticWindowClassDX0"))
     {
@@ -50,15 +56,21 @@ ensureActiveWindow()
         WinActivate ahk_class CrypticWindowClassDX0
         WinWaitActive  ahk_class CrypticWindowClassDX0
       }
+      if (visible)
+        return true
+
       Sleep, 50
-      ImageSearch, posi, posj,0,0,1920,1200,*24 professions.png
+      ImageSearch, posi, posj,0,0,1920,1200,*24 overview_icon.png
 
       If ErrorLevel
-            Send N
-      Sleep, 50
-      ;ImageSearch, posi, posj,0,0,1920,1200,*24 professions.png
+        Send N
+      Sleep, 90
+      ImageSearch, posi, posj,0,0,1920,1200,*24 overview_icon.png
+      If ErrorLevel
+        throw Exception("Overview not visible.", "OverviewNotFound")
       return true
     }
+    throw Exception("Neverwinter not running.", "WindowNotFound")
     return false
   }
 
@@ -71,8 +83,7 @@ class Crafter
   {
     if (target[1] != "")
     {
-      If (!ensureActiveWindow())
-        return false
+      global interfaceVisible := ensureActiveWindow(interfaceVisible)
       MouseMove, target[1], target[2], 20
       Sleep, 100
       if (num == 1)
@@ -103,6 +114,7 @@ class Crafter
 
   build(number, category)
   {
+    returnvalue := false
     Loop, %number%
     {
       this.click(category)
@@ -111,8 +123,9 @@ class Crafter
         break
       this.click(cont)
       this.fillAssets(1)
-      this.click(this.config.getCoordinate("start"))
+      returnvalue := this.click(this.config.getCoordinate("start"))
     }
+    return returnvalue
   }
 
   fillAssets(num)
@@ -122,8 +135,10 @@ class Crafter
       topleft := [0,0]
       Loop, %num%
       {
-        this.click(this.config.getCoordinate("asset", topleft))
-        this.click(this.config.getCoordinate("person"))
+        asset_coord := this.config.getCoordinate("asset", topleft)
+        this.click(asset_coord)
+
+        this.click(this.config.getCoordinate("person",asset_coord))
 
         if (A_Index == 1)
           topleft := [0, position[2]+asset_offset[2]]
@@ -158,8 +173,7 @@ class Crafter
   {
     this.config.current_asset := 1
     this.collect()
-    this.config.presets[num].build(crafter)
-    return
+    return this.config.presets[num].build(crafter)
   }
 
 }
@@ -169,23 +183,24 @@ class Preset
   name := "A Preset"
   config := []
   config_length := 0
-
+  crafter := ""
 
   build(crafter)
   {
+    this.crafter := crafter
     configuration := crafter.config
     For index, conf in this.config
     {
-      crafter.search(conf.search, this.taskCategory(conf))
-      crafter.build(conf.number, this.taskCategory(conf))
+      category := this.taskCategory(conf)
+      crafter.search(conf.search,category )
+      crafter.build(conf.number, category)
     }
 
   }
 
   taskCategory(conf)
   {
-    If (!ensureActiveWindow())
-        return
+    global interfaceVisible := ensureActiveWindow(interfaceVisible)
     if (InStr(conf.where,"lead"))
       pic := "leadership.png"
     else if (InStr(conf.where,"leath"))
@@ -246,8 +261,7 @@ class Configuration
 
   getCoordinate(what, topleft = "default")
   {
-    If (!ensureActiveWindow())
-        return
+    global interfaceVisible := ensureActiveWindow(interfaceVisible)
     if (topleft == "defaults")
     {
       topleft = [0,0]
@@ -301,6 +315,13 @@ class Configuration
 
   }
 
+
+  createFHotkey(number)
+  {
+    hotkey := "F" . number
+    Hotkey,% hotkey,PresetLabel
+  }
+
   loadFromString(string)
   {
     this.presets := []
@@ -315,8 +336,10 @@ class Configuration
       {
         StringSplit, preset, presetArray%a_index%, =
         this.presets[a_index] := new Preset(preset2)
-        hotkey := "F" . a_index
-        Hotkey,% hotkey,PresetLabel
+        if (a_index < 25)
+        {
+          this.createFHotkey(a_index)
+        }
       }
     }
   }
