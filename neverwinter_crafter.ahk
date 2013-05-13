@@ -20,7 +20,7 @@ PresetLabel:
   {
     if (e.What != "WindowNotFound")
       Send {Backspace}
-    ;MsgBox % "Error in " e.What ", which was called at line " e.Line
+    MsgBox % "Error in " e.What ", which was called at line " e.Line
   }
 
   return
@@ -45,6 +45,11 @@ ConfigurationGuiEscape:
     crafter.config.show()
     return
 
+  F9::
+    crafter.collect()
+    return
+
+
 #IfWinActive
 
 ensureActiveWindow(visible=false)
@@ -64,7 +69,7 @@ ensureActiveWindow(visible=false)
 
       If ErrorLevel
         Send N
-      Sleep, 90
+      Sleep, 100
       ImageSearch, posi, posj,0,0,1920,1200,*24 overview_icon.png
       If ErrorLevel
         throw Exception("Overview not visible.", "OverviewNotFound")
@@ -81,11 +86,12 @@ class Crafter
   current_asset := 1
   click(target, num = 1)
   {
+    ;MsgBox % "Target: " . target[1] . "," . target[2]
     if (target[1] != "")
     {
       global interfaceVisible := ensureActiveWindow(interfaceVisible)
       MouseMove, target[1], target[2], 20
-      Sleep, 100
+      Sleep, 50
       if (num == 1)
       {
         Click down
@@ -100,11 +106,11 @@ class Crafter
 
   search(text, where)
   {
-    if (!this.click(where))
-      return false
 
-    if (!this.click(this.config.getCoordinate("search")))
-      return false
+    this.click(where)
+    Sleep, 100
+    this.click(this.config.getCoordinate("search"))
+    ;MsgBox Clicked on search
     Send ^a
     Sleep, 100
     Send {raw}%text%
@@ -114,18 +120,16 @@ class Crafter
 
   build(number, category)
   {
-    returnvalue := false
     Loop, %number%
     {
       this.click(category)
-      cont := this.config.getCoordinate("continue")
-      if ErrorLevel
-        break
-      this.click(cont)
+      Sleep, 100
+      this.click(this.config.getCoordinate("continue"))
+      Sleep, 80
       this.fillAssets(1)
-      returnvalue := this.click(this.config.getCoordinate("start"))
+      this.click(this.config.getCoordinate("start"))
+
     }
-    return returnvalue
   }
 
   fillAssets(num)
@@ -137,7 +141,7 @@ class Crafter
       {
         asset_coord := this.config.getCoordinate("asset", topleft)
         this.click(asset_coord)
-
+        Sleep, 60
         this.click(this.config.getCoordinate("person",asset_coord))
 
         if (A_Index == 1)
@@ -154,9 +158,9 @@ class Crafter
   collect()
   {
     this.click(this.config.getCoordinate("overview"))
-
     Loop
     {
+      Sleep, 200
       get_collect := this.config.getCoordinate("collect")
       If (get_collect[1] == "")
       {
@@ -165,7 +169,7 @@ class Crafter
       }
       this.click(get_collect)
       this.click(this.config.getCoordinate("ok"))
-      Sleep, 200
+      Sleep, 100
     }
   }
 
@@ -191,32 +195,14 @@ class Preset
     configuration := crafter.config
     For index, conf in this.config
     {
-      category := this.taskCategory(conf)
+      category := crafter.config.getCoordinate(conf.where)
+      ;MsgBox % "Clicking on category: " . category[1] . "," . category[2] . " - name: " . conf.where
       crafter.search(conf.search,category )
       crafter.build(conf.number, category)
     }
 
   }
 
-  taskCategory(conf)
-  {
-    global interfaceVisible := ensureActiveWindow(interfaceVisible)
-    if (InStr(conf.where,"lead"))
-      pic := "leadership.png"
-    else if (InStr(conf.where,"leath"))
-      pic := "leathermaking.png"
-    else if (InStr(conf.where,"mail"))
-      pic := "mailsmithing.png"
-    else if (InStr(conf.where,"plate"))
-      pic := "platesmithing.png"
-    else if (InStr(conf.where,"tail"))
-      pic := "tailoring.png"
-
-    ImageSearch, posi, posj,0,0,1920,1200,*16 %pic%
-    If ErrorLevel
-      MsgBox % conf.where . " not found"
-    return [posi+15, posj+5]
-  }
 
   __New(fromString)
   {
@@ -261,10 +247,11 @@ class Configuration
 
   getCoordinate(what, topleft = "default")
   {
-    global interfaceVisible := ensureActiveWindow(interfaceVisible)
-    if (topleft == "defaults")
+    global interfaceVisible
+    ;interfaceVisible := ensureActiveWindow(interfaceVisible)
+    if (topleft == "default")
     {
-      topleft = [0,0]
+      topleft := [0,0]
     }
     if (what == "continue")
       pic := "continue_button.png"
@@ -282,17 +269,35 @@ class Configuration
       pic := "start_button_off.png"
     else if (what == "search")
       pic := "search_field.png"
+    else if (InStr(what,"leader"))
+      pic := "leadership.png"
+    else if (InStr(what,"leather"))
+      pic := "leathermaking.png"
+    else if (InStr(what,"mail"))
+      pic := "mailsmithing.png"
+    else if (InStr(what,"plate"))
+      pic := "platesmithing.png"
+    else if (InStr(what,"tailor"))
+      pic := "tailoring.png"
     else
       return ""
 
-    ImageSearch, posi, posj,topleft[1], topleft[2],1920,1200,*16 %pic%
+
+    ImageSearch, posi, posj,topleft[1], topleft[2],1920,1200,*24 %pic%
+
+    ;MsgBox % "Getting coordinate: " . posi . "," . posj . " for picture: " . pic . " in rectangle: " . topleft[1] . "," . topleft[2] . " - " . topleft
+
     If ErrorLevel
       {
         if (what == "start")
           ImageSearch, posi, posj,topleft[1], topleft[2],1920,1200,*16 start_button_on.png
         if ErrorLevel
+          {
+            ;throw Exception("NotFound", what . " has not been found")
           return ""
+          }
       }
+
     return [posi+15,posj+5]
   }
 
