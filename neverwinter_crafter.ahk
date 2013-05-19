@@ -65,12 +65,12 @@ ensureActiveWindow(visible=false)
         return true
 
       Sleep, 50
-      ImageSearch, posi, posj,0,0,1920,1200,*24 overview_icon.png
+      ImageSearch, posi, posj,0,0,1920,1200,*24 pictures/overview_icon.png
 
       If ErrorLevel
         Send N
       Sleep, 100
-      ImageSearch, posi, posj,0,0,1920,1200,*24 overview_icon.png
+      ImageSearch, posi, posj,0,0,1920,1200,*24 pictures/overview_icon.png
       If ErrorLevel
         throw Exception("Overview not visible.", "OverviewNotFound")
       return true
@@ -254,31 +254,31 @@ class Configuration
       topleft := [0,0]
     }
     if (what == "continue")
-      pic := "continue_button.png"
+      pic := "pictures/continue_button.png"
     else if (what == "ok")
-      pic := "ok_button.png"
+      pic := "pictures/ok_button.png"
     else if (what == "collect")
-      pic := "collect_button.png"
+      pic := "pictures/collect_button.png"
     else if (what == "person")
-      pic := "person_button.png"
+      pic := "pictures/person_button.png"
     else if (what == "overview")
-      pic := "overview_icon.png"
+      pic := "pictures/overview_icon.png"
     else if (what == "asset")
-      pic := "asset_button.png"
+      pic := "pictures/asset_button.png"
     else if (what == "start")
-      pic := "start_button_off.png"
+      pic := "pictures/start_button_off.png"
     else if (what == "search")
-      pic := "search_field.png"
+      pic := "pictures/search_field.png"
     else if (InStr(what,"leader"))
-      pic := "leadership.png"
+      pic := "pictures/leadership.png"
     else if (InStr(what,"leather"))
-      pic := "leathermaking.png"
+      pic := "pictures/leathermaking.png"
     else if (InStr(what,"mail"))
-      pic := "mailsmithing.png"
+      pic := "pictures/mailsmithing.png"
     else if (InStr(what,"plate"))
-      pic := "platesmithing.png"
+      pic := "pictures/platesmithing.png"
     else if (InStr(what,"tailor"))
-      pic := "tailoring.png"
+      pic := "pictures/tailoring.png"
     else
       return ""
 
@@ -290,7 +290,7 @@ class Configuration
     If ErrorLevel
       {
         if (what == "start")
-          ImageSearch, posi, posj,topleft[1], topleft[2],1920,1200,*16 start_button_on.png
+          ImageSearch, posi, posj,topleft[1], topleft[2],1920,1200,*16 pictures/start_button_on.png
         if ErrorLevel
           {
             ;throw Exception("NotFound", what . " has not been found")
